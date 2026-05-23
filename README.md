@@ -1,59 +1,80 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Posyandu Locator - Sistem Informasi Geografis (SIG) Pencarian Posyandu Terdekat
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi Sistem Informasi Geografis (SIG) berbasis web untuk pencarian lokasi Posyandu terdekat di wilayah Kecamatan Arjasa, Kabupaten Jember. Aplikasi ini merupakan bagian dari penelitian tugas akhir (skripsi) untuk mengimplementasikan kombinasi metode **Haversine** dan **Dijkstra**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Peta Interaktif:** Visualisasi persebaran Posyandu di 6 desa (Candijati, Darsono, Biting, Kemuning Lor, Kamal, Arjasa) menggunakan Leaflet.js dan OpenStreetMap.
+- **Penyaringan Jarak (Haversine):** Menghitung jarak garis lurus dari koordinat GPS pengguna ke seluruh Posyandu secara instan untuk mencari yang terdekat.
+- **Pencarian Rute Terpendek (Dijkstra & Yen's Algorithm):** Menghitung rute navigasi jalan ril dan menyediakan hingga 3 rute alternatif (*K-Shortest Paths*).
+- **Estimasi Waktu (ETA):** Menghitung durasi perjalanan secara dinamis berdasarkan 3 moda transportasi: Jalan Kaki, Mobil, dan Motor.
+- **Panel Dashboard Admin:** Pengelolaan data desa, lokasi koordinat Posyandu, data titik jalan (simpul graf), dan ruas jalan (sisi graf) secara dinamis menggunakan SimpleDataTable.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Framework:** Laravel 13 (PHP 8.4)
+- **Frontend CSS/JS:** TailwindCSS v4, AlpineJS v3, AdminLTE v4
+- **Mapping Engine:** Leaflet.js, OpenStreetMap (OSM)
+- **Database:** MariaDB / MySQL
+- **Testing Tools:** Pest PHP Framework (Automated Testing)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## ⚙️ Petunjuk Pemasangan
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Cloning Proyek & Install Dependensi
+```bash
+# Clone proyek ini
+git clone https://github.com/username/skripsi-gis.git
+cd skripsi-gis
 
-### Premium Partners
+# Install package PHP & JavaScript
+composer install
+npm install
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 2. Konfigurasi Environment
+Salin file `.env.example` menjadi `.env` dan sesuaikan koneksi database Anda:
+```env
+DB_CONNECTION=mariadb
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=skripsi_gis
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Contributing
+### 3. Migrasi & Impor Data Jalan (OpenStreetMap)
+Jalankan migrasi database dan importir data jaringan jalan OSM yang telah disiapkan:
+```bash
+# Generate key aplikasi
+php artisan key:generate
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Migrasi tabel database
+php artisan migrate --seed
 
-## Code of Conduct
+# Impor data simpul dan ruas jalan OSM
+php artisan osm:import-roads
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Jalankan Aplikasi
+Jalankan development server Laravel dan build asset Vite secara bersamaan:
+```bash
+# Jalankan server PHP (Default: http://127.0.0.1:8000)
+php artisan serve
 
-## Security Vulnerabilities
+# Jalankan Vite server untuk frontend
+npm run dev
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🧪 Pengujian Otomatis
+Anda dapat memverifikasi seluruh fungsi logika program (Haversine, Dijkstra Service, CRUD Admin, Route API) menggunakan Pest:
+```bash
+php artisan test
+```
