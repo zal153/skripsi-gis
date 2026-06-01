@@ -2,7 +2,8 @@
 <aside class="sidebar">
     <!-- Logo -->
     <div class="flex items-center gap-3 mb-1">
-        <div class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shadow-sm overflow-hidden">
+        <div
+            class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shadow-sm overflow-hidden">
             <img src="{{ asset('assets/img/logo.png') }}" class="w-full h-full object-cover" alt="Logo" />
         </div>
         <div class="flex flex-col">
@@ -32,13 +33,15 @@
     <div class="bg-gray-50 border border-gray-100 rounded-xl p-3">
         <div class="flex justify-between items-center mb-2">
             <label class="text-xs font-semibold text-gray-500 block">Radius Pencarian</label>
-            <button onclick="testingArjasa()" class="text-3xs text-gray-700 hover:text-gray-900 font-bold bg-white hover:bg-gray-50 px-2 py-0.5 rounded-lg border border-gray-200 transition">
+            <button onclick="testingArjasa()"
+                class="text-3xs text-gray-700 hover:text-gray-900 font-bold bg-white hover:bg-gray-50 px-2 py-0.5 rounded-lg border border-gray-200 transition">
                 <i class="bi bi-play-circle-fill"></i> Demo
             </button>
         </div>
         <div class="flex items-center gap-3">
             <input type="range" id="radiusSlider" min="1" max="20" value="5"
-                class="flex-1 accent-gray-900 cursor-pointer h-1 bg-gray-200 rounded-lg appearance-none" oninput="document.getElementById('radiusVal').textContent=this.value; triggerRadiusChange();">
+                class="flex-1 accent-gray-900 cursor-pointer h-1 bg-gray-200 rounded-lg appearance-none"
+                oninput="document.getElementById('radiusVal').textContent=this.value; triggerRadiusChange();">
             <span class="text-xs font-extrabold text-gray-800 w-12 text-right"><span id="radiusVal">5</span> km</span>
         </div>
     </div>
@@ -91,7 +94,8 @@
                     <span class="text-gray-400 block" style="font-size: 9px;">Snapping Dist</span>
                     <span class="font-bold text-gray-800" id="telSnapping">-</span>
                 </div>
-                <div class="bg-white p-2 rounded-lg border border-gray-100 col-span-2 flex justify-between items-center">
+                <div
+                    class="bg-white p-2 rounded-lg border border-gray-100 col-span-2 flex justify-between items-center">
                     <span class="text-gray-400" style="font-size: 9px;">Backend Latency</span>
                     <span class="font-bold text-gray-800" id="telTime">-</span>
                 </div>
@@ -103,17 +107,20 @@
     <div class="flex-1 overflow-y-auto flex flex-col gap-3 pr-1" id="resultContainer">
         <div class="empty-state" id="emptyState">
             <div class="relative mb-2">
-                <div class="w-16 h-16 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center shadow-inner">
+                <div
+                    class="w-16 h-16 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center shadow-inner">
                     <i class="bi bi-geo text-2xl text-purple-300"></i>
                 </div>
             </div>
             <p class="text-sm font-semibold text-gray-700">Hasil Belum Ditemukan</p>
-            <p class="text-xs text-gray-400 max-w-[200px] leading-relaxed">Klik "Cari Terdekat?" untuk menemukan posyandu di sekitar Anda</p>
+            <p class="text-xs text-gray-400 max-w-[200px] leading-relaxed">Klik "Cari Terdekat?" untuk menemukan
+                posyandu di sekitar Anda</p>
         </div>
     </div>
 
     <!-- Loading -->
-    <div id="loadingState" class="hidden items-center justify-center gap-2 py-3 bg-purple-50/50 rounded-xl border border-purple-100/30">
+    <div id="loadingState"
+        class="hidden items-center justify-center gap-2 py-3 bg-purple-50/50 rounded-xl border border-purple-100/30">
         <div class="loading-dots">
             <span></span><span></span><span></span>
         </div>
@@ -122,9 +129,9 @@
 
     <hr class="border-gray-100/60" />
 
-    <!-- Feedback -->
+    {{-- <!-- Feedback -->
     <button class="feedback-btn" onclick="openModal()">
         <i class="bi bi-chat-dots-fill"></i>
         Kritik dan Saran
-    </button>
+    </button> --}}
 </aside>

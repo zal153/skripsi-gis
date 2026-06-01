@@ -11,8 +11,6 @@
     <!-- Tailwind CSS & App JS via Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-
-
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -71,7 +69,8 @@
         }
 
         .btn-primary {
-            background: #111827; /* slate-900 */
+            background: #111827;
+            /* slate-900 */
             color: #fff;
             border-radius: 12px;
             padding: 12px 18px;
@@ -89,7 +88,8 @@
         }
 
         .btn-primary:hover {
-            background: #1f2937; /* slate-800 */
+            background: #1f2937;
+            /* slate-800 */
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(17, 24, 39, 0.25);
         }
@@ -99,7 +99,8 @@
         }
 
         .btn-danger {
-            background: #ef4444; /* red-500 */
+            background: #ef4444;
+            /* red-500 */
             color: #fff;
             border-radius: 12px;
             padding: 12px 18px;
@@ -117,7 +118,8 @@
         }
 
         .btn-danger:hover {
-            background: #dc2626; /* red-600 */
+            background: #dc2626;
+            /* red-600 */
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25);
         }
@@ -364,7 +366,8 @@
         }
 
         .layer-btn.active {
-            background: #111827; /* slate-900 */
+            background: #111827;
+            /* slate-900 */
             color: #fff;
             box-shadow: 0 4px 10px rgba(17, 24, 39, 0.2);
         }
@@ -391,7 +394,8 @@
             border-radius: 8px;
             border: none;
             background: transparent;
-            color: #6b7280; /* gray-500 */
+            color: #6b7280;
+            /* gray-500 */
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
@@ -404,11 +408,13 @@
         }
 
         .transport-btn:hover {
-            color: #111827; /* gray-900 */
+            color: #111827;
+            /* gray-900 */
         }
 
         .transport-btn.active {
-            color: #7c3aed; /* active purple */
+            color: #7c3aed;
+            /* active purple */
             background: #f5f3ff;
         }
 
@@ -452,6 +458,7 @@
             cursor: pointer;
             transition: transform 0.1s;
         }
+
         input[type="range"]::-webkit-slider-thumb:hover {
             transform: scale(1.2);
         }
@@ -495,12 +502,15 @@
                 transform: translateY(-30px) rotate(-45deg);
                 opacity: 0;
             }
+
             60% {
                 transform: translateY(5px) rotate(-45deg);
             }
+
             80% {
                 transform: translateY(-3px) rotate(-45deg);
             }
+
             100% {
                 transform: translateY(0) rotate(-45deg);
                 opacity: 1;

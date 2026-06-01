@@ -6,7 +6,7 @@
         <!-- Map area on the Right -->
         <div class="flex-grow h-full relative">
             <x-landing.map />
-            
+
             <!-- Map Layer Switcher -->
             <div class="map-layer-switcher" id="layerSwitcher">
                 <button class="layer-btn active" data-layer="satelit" onclick="switchMapLayer('satelit')">
@@ -81,13 +81,12 @@
                     });
 
                 mapLayers.peta = L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    {
-        attribution: '© OpenStreetMap contributors © CARTO',
-        subdomains: 'abcd',
-        maxZoom: 20
-    }
-);
+                    'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                        attribution: '© OpenStreetMap contributors © CARTO',
+                        subdomains: 'abcd',
+                        maxZoom: 20
+                    }
+                );
 
                 // Default layer
                 mapLayers.satelit.addTo(map);
@@ -309,16 +308,18 @@
                     // Display Telemetry Card
                     if (result.telemetry) {
                         const tel = result.telemetry;
-                        document.getElementById('telVisited').textContent = Number(tel.dijkstra_visited).toLocaleString('id-ID');
+                        document.getElementById('telVisited').textContent = Number(tel.dijkstra_visited).toLocaleString(
+                            'id-ID');
                         document.getElementById('telRuns').textContent = Number(tel.dijkstra_runs).toLocaleString('id-ID');
-                        document.getElementById('telScale').textContent = `${tel.graph_nodes_count} / ${tel.graph_edges_count}`;
-                        
+                        document.getElementById('telScale').textContent =
+                            `${tel.graph_nodes_count} / ${tel.graph_edges_count}`;
+
                         const startSnapM = (tel.start_snap_distance * 1000).toFixed(0);
                         const endSnapM = (tel.end_snap_distance * 1000).toFixed(0);
                         document.getElementById('telSnapping').textContent = `${startSnapM}m / ${endSnapM}m`;
-                        
+
                         document.getElementById('telTime').textContent = `${Number(result.search_time_ms).toFixed(2)} ms`;
-                        
+
                         document.getElementById('telemetryCard').classList.remove('hidden');
                         document.getElementById('transportSelectorContainer').classList.remove('hidden');
                     }
@@ -344,47 +345,110 @@
                         }
                     ];
 
-                    [...result.routes].reverse().forEach((routeData, drawIndex) => {
-                        const routeIndex = result.routes.length - 1 - drawIndex;
+                    // Filter out highly similar alternative routes (overlap >= 85%)
+                    const filteredRoutes = [];
+                    if (result.routes && result.routes.length > 0) {
+                        filteredRoutes.push(result.routes[0]); // Always keep the main route
+
+                        for (let k = 1; k < result.routes.length; k++) {
+                            const altRoute = result.routes[k];
+                            const altKeys = altRoute.path.map(p => `${Number(p.lat).toFixed(5)},${Number(p.lng).toFixed(5)}`);
+                            let isDuplicate = false;
+
+                            for (const acceptedRoute of filteredRoutes) {
+                                const acceptedKeys = new Set(acceptedRoute.path.map(p => `${Number(p.lat).toFixed(5)},${Number(p.lng).toFixed(5)}`));
+                                let sharedCount = 0;
+                                altKeys.forEach(key => {
+                                    if (acceptedKeys.has(key)) {
+                                        sharedCount++;
+                                    }
+                                });
+
+                                const overlapRatio = sharedCount / Math.max(1, altKeys.length);
+                                if (overlapRatio >= 0.85) {
+                                    isDuplicate = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isDuplicate) {
+                                filteredRoutes.push(altRoute);
+                            }
+                        }
+                    }
+
+                    [...filteredRoutes].reverse().forEach((routeData, drawIndex) => {
+                        const routeIndex = filteredRoutes.length - 1 - drawIndex;
                         const isMainRoute = routeIndex === 0;
                         const style = routeStyles[routeIndex] ?? routeStyles[routeStyles.length - 1];
                         const graphCoords = routeData.path.map(titik => [titik.lat, titik.lng]);
                         const coords = offsetRouteCoords([from, ...graphCoords, to], routeIndex);
 
-                        const line = L.polyline(coords, {
-                            color: style.color,
-                            weight: style.weight,
-                            opacity: style.opacity,
-                            lineCap: 'round',
-                            lineJoin: 'round',
-                            dashArray: style.dashArray
-                        }).addTo(map);
+                        // 1. Snapping Start (Dashed line from origin to first road node)
+                        if (coords.length >= 3) {
+                            const snapStart = L.polyline([coords[0], coords[1]], {
+                                color: style.color,
+                                weight: 4,
+                                opacity: 0.8,
+                                lineCap: 'round',
+                                lineJoin: 'round',
+                                dashArray: '4, 6'
+                            }).addTo(map);
+                            routeLayers.push(snapStart);
+                        }
 
-                        line.routeDistance = routeData.distance;
-                        line.routeIndex = routeIndex;
-                        line.isMainRoute = isMainRoute;
-                        line.searchTimeMs = searchTimeMs;
+                        // 2. Snapping End (Dashed line from last road node to destination)
+                        if (coords.length >= 3) {
+                            const snapEnd = L.polyline([coords[coords.length - 2], coords[coords.length - 1]], {
+                                color: style.color,
+                                weight: 4,
+                                opacity: 0.8,
+                                lineCap: 'round',
+                                lineJoin: 'round',
+                                dashArray: '4, 6'
+                            }).addTo(map);
+                            routeLayers.push(snapEnd);
+                        }
 
-                        const duration = calculateDuration(routeData.distance, currentTransportMode);
-                        line.bindPopup(`
-                            <div class="p-1">
-                                <h5 class="font-bold text-purple-900 text-xs mb-1" style="font-family:'Plus Jakarta Sans',sans-serif;">${isMainRoute ? 'Rute Utama (Dijkstra)' : `Rute Alternatif ${routeIndex} (Yen)`}</h5>
-                                <p class="text-3xs text-gray-600 mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-geo-alt"></i> Jarak: <b>${routeData.distance.toFixed(2)} km</b></p>
-                                <p class="text-3xs text-purple-600 font-semibold mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-clock"></i> Estimasi: <b>${duration}</b></p>
-                                <p class="text-3xs text-gray-400" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-cpu"></i> Backend: ${searchTimeMs} ms</p>
-                            </div>
-                        `);
+                        // 3. Main Road Route (Solid for main, dashed for alternative routes)
+                        const roadCoords = coords.slice(1, coords.length - 1);
+                        if (roadCoords.length > 0) {
+                            const line = L.polyline(roadCoords, {
+                                color: style.color,
+                                weight: style.weight,
+                                opacity: style.opacity,
+                                lineCap: 'round',
+                                lineJoin: 'round',
+                                dashArray: isMainRoute ? null : style.dashArray
+                            }).addTo(map);
 
-                        routeLayers.push(line);
+                            line.routeDistance = routeData.distance;
+                            line.routeIndex = routeIndex;
+                            line.isMainRoute = isMainRoute;
+                            line.searchTimeMs = searchTimeMs;
+
+                            const duration = calculateDuration(routeData.distance, currentTransportMode);
+                            line.bindPopup(`
+                                <div class="p-1">
+                                    <h5 class="font-bold text-purple-900 text-xs mb-1" style="font-family:'Plus Jakarta Sans',sans-serif;">${isMainRoute ? 'Rute Utama (Dijkstra)' : `Rute Alternatif ${routeIndex} (Yen)`}</h5>
+                                    <p class="text-3xs text-gray-600 mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-geo-alt"></i> Jarak: <b>${routeData.distance.toFixed(2)} km</b></p>
+                                    <p class="text-3xs text-purple-600 font-semibold mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-clock"></i> Estimasi: <b>${duration}</b></p>
+                                    <p class="text-3xs text-gray-400" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-cpu"></i> Backend: ${searchTimeMs} ms</p>
+                                </div>
+                            `);
+
+                            routeLayers.push(line);
+                        }
                     });
 
                     // Update active card's duration text
                     if (posyanduId) {
-                        const mainDistance = result.routes[0].distance;
+                        const mainDistance = filteredRoutes[0].distance;
                         const badge = document.getElementById(`dist-badge-${posyanduId}`);
                         if (badge) {
                             const durationText = calculateDuration(mainDistance, currentTransportMode);
-                            badge.innerHTML = `${mainDistance.toFixed(2)} km <span class="text-gray-300 mx-1">|</span> <span class="duration-text text-purple-700 font-bold">${durationText}</span>`;
+                            badge.innerHTML =
+                                `${mainDistance.toFixed(2)} km <span class="text-gray-300 mx-1">|</span> <span class="duration-text text-purple-700 font-bold">${durationText}</span>`;
                         }
                     }
                 } catch (error) {
@@ -397,7 +461,7 @@
                 const distance = haversine(from[0], from[1], to[0], to[1]);
                 const duration = calculateDuration(distance, currentTransportMode);
                 const coords = [from, to];
-                
+
                 const line = L.polyline(coords, {
                     color: '#7c3aed',
                     weight: 6,
@@ -405,12 +469,12 @@
                     lineCap: 'round',
                     lineJoin: 'round'
                 }).addTo(map);
-                
+
                 line.routeDistance = distance;
                 line.routeIndex = 0;
                 line.isMainRoute = true;
                 line.searchTimeMs = "0.00";
-                
+
                 line.bindPopup(`
                     <div class="p-1">
                         <h5 class="font-bold text-purple-900 text-xs mb-1" style="font-family:'Plus Jakarta Sans',sans-serif;">Rute Garis Lurus (Fallback)</h5>
@@ -418,13 +482,14 @@
                         <p class="text-3xs text-purple-600 font-semibold mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-clock"></i> Estimasi: <b>${duration}</b></p>
                     </div>
                 `);
-                
+
                 routeLayers.push(line);
-                
+
                 if (activePosyanduId) {
                     const badge = document.getElementById(`dist-badge-${activePosyanduId}`);
                     if (badge) {
-                        badge.innerHTML = `${distance.toFixed(2)} km <span class="text-gray-300 mx-1">|</span> <span class="duration-text text-purple-700 font-bold">${duration}</span>`;
+                        badge.innerHTML =
+                            `${distance.toFixed(2)} km <span class="text-gray-300 mx-1">|</span> <span class="duration-text text-purple-700 font-bold">${duration}</span>`;
                     }
                 }
             }
@@ -455,7 +520,9 @@
                     iconAnchor: [16, 32]
                 });
 
-                destinationMarker = L.marker(to, { icon: destIcon }).addTo(map);
+                destinationMarker = L.marker(to, {
+                    icon: destIcon
+                }).addTo(map);
 
                 const activePosyandu = posyanduData.find(p => p.id === posyanduId);
                 if (activePosyandu) {
@@ -483,7 +550,7 @@
                 map.flyTo([lat, lng], 16, {
                     duration: 1.2
                 });
-                
+
                 setTimeout(() => {
                     if (destinationMarker) {
                         destinationMarker.openPopup();
@@ -541,7 +608,8 @@
                         if (card.classList.contains('active') && routeLayers.length > 0) {
                             const mainLine = routeLayers.find(l => l.isMainRoute);
                             if (mainLine) {
-                                durationSpan.textContent = calculateDuration(mainLine.routeDistance, currentTransportMode);
+                                durationSpan.textContent = calculateDuration(mainLine.routeDistance,
+                                    currentTransportMode);
                                 return;
                             }
                         }
@@ -565,7 +633,8 @@
 
                 if (results.length === 0) {
                     emptyState.style.display = 'flex';
-                    emptyState.innerHTML = `
+                    emptyState.innerHTML =
+                        `
                         <div class="relative mb-2">
                             <div class="w-16 h-16 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center">
                                 <i class="bi bi-geo text-2xl text-purple-300"></i>
@@ -698,7 +767,8 @@
 
                 const emptyState = document.getElementById('emptyState');
                 emptyState.style.display = 'flex';
-                emptyState.innerHTML = `
+                emptyState.innerHTML =
+                    `
                     <div class="relative mb-2">
                         <div class="w-16 h-16 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center shadow-inner">
                             <i class="bi bi-geo text-2xl text-purple-300"></i>

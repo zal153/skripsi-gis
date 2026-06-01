@@ -4,6 +4,25 @@
 <html lang="id">
 
 <head>
+    <script>
+        // Set theme based on preference or system
+        (function() {
+            const getPreferredTheme = () => {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme) {
+                    return storedTheme;
+                }
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            };
+
+            const setTheme = theme => {
+                document.documentElement.setAttribute('data-bs-theme', theme);
+            };
+
+            // Set initial theme immediately to avoid layout flash
+            setTheme(getPreferredTheme());
+        })();
+    </script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>{{ $title }} | Posyandu Locator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -74,6 +93,51 @@
         });
     </script>
     <!--end::OverlayScrollbars Configure-->
+
+    <!-- Theme Toggle Handler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const themeToggleIcon = document.getElementById('themeToggleIcon');
+
+            if (!themeToggleBtn) return;
+
+            const getTheme = () => {
+                return document.documentElement.getAttribute('data-bs-theme') || 'light';
+            };
+
+            const updateToggleIcon = (theme) => {
+                if (theme === 'dark') {
+                    themeToggleIcon.className = 'bi bi-sun-fill text-warning';
+                } else {
+                    themeToggleIcon.className = 'bi bi-moon-fill';
+                }
+            };
+
+            // Set initial icon
+            updateToggleIcon(getTheme());
+
+            // Handle button click
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = getTheme();
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                document.documentElement.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateToggleIcon(newTheme);
+            });
+
+            // Listen for system changes if no manual preference is set
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if (!localStorage.getItem('theme')) {
+                    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' :
+                        'light';
+                    document.documentElement.setAttribute('data-bs-theme', systemTheme);
+                    updateToggleIcon(systemTheme);
+                }
+            });
+        });
+    </script>
 
     @stack('scripts')
 </body>

@@ -35,7 +35,8 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->nama_desa }}</td>
                                             <td class="text-center">
-                                                <a href="{{ route('desa.edit', $item) }}" class="btn btn-sm btn-primary"><i
+                                                <a href="{{ route('desa.edit', $item) }}"
+                                                    class="btn btn-sm btn-primary"><i
                                                         class="bi bi-pencil-square"></i></a>
                                                 <form action="{{ route('desa.destroy', $item) }}" method="POST"
                                                     style="display:inline;" id="delete-form-{{ $item->id }}">

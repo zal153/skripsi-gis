@@ -29,42 +29,60 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <form action="{{ route('titik-jalan.index') }}" method="GET" class="mb-3 d-flex justify-content-between align-items-center">
+                            <form action="{{ route('titik-jalan.index') }}" method="GET"
+                                class="mb-3 d-flex justify-content-between align-items-center">
                                 <!-- Entries Per Page -->
                                 <div class="d-flex align-items-center">
-                                    <select name="per_page" class="form-select form-select-sm w-auto me-2" onchange="this.form.submit()">
-                                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                        <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50</option>
-                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                    <select name="per_page" class="form-select form-select-sm w-auto me-2"
+                                        onchange="this.form.submit()">
+                                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10
+                                        </option>
+                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25
+                                        </option>
+                                        <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50
+                                        </option>
+                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100
+                                        </option>
                                     </select>
                                     <span class="text-muted small">entries per page</span>
                                 </div>
 
                                 <!-- Search Box -->
                                 <div class="input-group" style="max-width: 250px;">
-                                    <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari nama titik..." value="{{ request('search') }}">
-                                    @if(request('sort_by')) <input type="hidden" name="sort_by" value="{{ request('sort_by') }}"> @endif
-                                    @if(request('sort_dir')) <input type="hidden" name="sort_dir" value="{{ request('sort_dir') }}"> @endif
-                                    <button class="btn btn-outline-secondary btn-sm" type="submit"><i class="bi bi-search"></i></button>
+                                    <input type="text" name="search" class="form-control form-control-sm"
+                                        placeholder="Cari nama titik..." value="{{ request('search') }}">
+                                    @if (request('sort_by'))
+                                        <input type="hidden" name="sort_by" value="{{ request('sort_by') }}">
+                                    @endif
+                                    @if (request('sort_dir'))
+                                        <input type="hidden" name="sort_dir" value="{{ request('sort_dir') }}">
+                                    @endif
+                                    <button class="btn btn-outline-secondary btn-sm" type="submit"><i
+                                            class="bi bi-search"></i></button>
                                 </div>
                             </form>
 
                             @php
-                                $sortHelper = function($column) {
+                                $sortHelper = function ($column) {
                                     $currentSortBy = request('sort_by', 'id');
                                     $currentSortDir = request('sort_dir', 'desc');
-                                    $newDir = ($currentSortBy === $column && $currentSortDir === 'asc') ? 'desc' : 'asc';
+                                    $newDir = $currentSortBy === $column && $currentSortDir === 'asc' ? 'desc' : 'asc';
                                     $icon = 'bi-chevron-expand';
-                                    
+
                                     if ($currentSortBy === $column) {
                                         $icon = $currentSortDir === 'asc' ? 'bi-chevron-up' : 'bi-chevron-down';
                                     }
-                                    
+
                                     $url = request()->fullUrlWithQuery(['sort_by' => $column, 'sort_dir' => $newDir]);
-                                    return '<a href="' . $url . '" class="text-dark text-decoration-none d-flex justify-content-between align-items-center">' . 
-                                           '<span>' . ucfirst(str_replace('_', ' ', $column)) . '</span>' .
-                                           '<i class="bi ' . $icon . ' ms-1" style="font-size: 0.8em;"></i></a>';
+                                    return '<a href="' .
+                                        $url .
+                                        '" class="text-dark text-decoration-none d-flex justify-content-between align-items-center">' .
+                                        '<span>' .
+                                        ucfirst(str_replace('_', ' ', $column)) .
+                                        '</span>' .
+                                        '<i class="bi ' .
+                                        $icon .
+                                        ' ms-1" style="font-size: 0.8em;"></i></a>';
                                 };
                             @endphp
 
@@ -80,34 +98,37 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                @forelse ($titikJalan as $item)
-                                    <tr>
-                                        <td>{{ $titikJalan->firstItem() + $loop->index }}</td>
-                                        <td>{{ $item->nama_titik }}</td>
-                                        <td>{{ $item->latitude }}</td>
-                                        <td>{{ $item->longitude }}</td>
-                                        <td class="text-center">
-                                            <a href="{{ route('titik-jalan.edit', $item) }}"
-                                                class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a>
-                                            <form action="{{ route('titik-jalan.destroy', $item) }}" method="POST"
-                                                style="display:inline;" id="delete-form-{{ $item->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-danger delete-btn"
-                                                    data-form-id="{{ $item->id }}"><i
-                                                        class="bi bi-trash"></i></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted py-3">Tidak ada data ditemukan</td>
-                                    </tr>
-                                @endforelse
-                                </tbody>
-                            </table>
+                                        @forelse ($titikJalan as $item)
+                                            <tr>
+                                                <td>{{ $titikJalan->firstItem() + $loop->index }}</td>
+                                                <td>{{ $item->nama_titik }}</td>
+                                                <td>{{ $item->latitude }}</td>
+                                                <td>{{ $item->longitude }}</td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('titik-jalan.edit', $item) }}"
+                                                        class="btn btn-sm btn-primary"><i
+                                                            class="bi bi-pencil-square"></i></a>
+                                                    <form action="{{ route('titik-jalan.destroy', $item) }}"
+                                                        method="POST" style="display:inline;"
+                                                        id="delete-form-{{ $item->id }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="btn btn-sm btn-danger delete-btn"
+                                                            data-form-id="{{ $item->id }}"><i
+                                                                class="bi bi-trash"></i></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted py-3">Tidak ada data
+                                                    ditemukan</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
-                            
+
                             <div class="mt-3">
                                 {{ $titikJalan->links() }}
                             </div>

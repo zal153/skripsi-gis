@@ -30,6 +30,7 @@ Route::prefix('api')->group(function () {
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/pengujian-mae', [DashboardController::class, 'maeTest'])->name('mae-test');
 });
 
 Route::middleware('auth')->get('/dashboard', function () {

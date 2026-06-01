@@ -42,19 +42,29 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('jalan.index') }}" class="nav-link {{ request()->routeIs('jalan.index') ? 'active' : '' }}">
+                    <a href="{{ route('jalan.index') }}"
+                        class="nav-link {{ request()->routeIs('jalan.index') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-signpost-split-fill"></i>
                         <p>Data Jalan</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('titik-jalan.index') }}" class="nav-link {{ request()->routeIs('titik-jalan.index') ? 'active' : '' }}">
+                    <a href="{{ route('titik-jalan.index') }}"
+                        class="nav-link {{ request()->routeIs('titik-jalan.index') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-pin-map-fill"></i>
                         <p>Titik Jalan</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('akun.index') }}" class="nav-link {{ request()->routeIs('admin.akun') ? 'active' : '' }}">
+                    <a href="{{ route('admin.mae-test') }}"
+                        class="nav-link {{ request()->routeIs('admin.mae-test') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-calculator-fill"></i>
+                        <p>Pengujian MAE</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('akun.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.akun') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-person-fill"></i>
                         <p>Akun</p>
                     </a>

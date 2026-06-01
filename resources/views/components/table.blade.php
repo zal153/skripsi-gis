@@ -3,7 +3,7 @@
     'headers' => [],
 ])
 
-<table class="table table-bordered" id="{{ $id }}">
+<table class="table table-bordered table-striped table-hover" id="{{ $id }}">
     <thead>
         <tr>
             @foreach ($headers as $header)

@@ -3,3 +3,45 @@
 @import "leaflet/dist/leaflet.css";
 
 @config "../../tailwind.config.js";
+
+/* Custom SimpleDataTable overrides for theme-awareness (Dark/Light mode) */
+.datatable-input,
+.datatable-selector {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+    border: 1px solid var(--bs-border-color) !important;
+    border-radius: var(--bs-border-radius) !important;
+}
+
+.datatable-pagination a {
+    color: var(--bs-body-color) !important;
+    background-color: var(--bs-body-bg) !important;
+    border: 1px solid var(--bs-border-color) !important;
+    border-radius: var(--bs-border-radius) !important;
+    transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+.datatable-pagination a:hover {
+    background-color: var(--bs-secondary-bg) !important;
+    color: var(--bs-primary) !important;
+}
+
+.datatable-pagination .active a,
+.datatable-pagination .active a:focus,
+.datatable-pagination .active a:hover,
+.datatable-pagination .datatable-active a,
+.datatable-pagination .datatable-active a:focus,
+.datatable-pagination .datatable-active a:hover {
+    background-color: var(--bs-primary) !important;
+    color: var(--bs-white) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+.datatable-pagination .disabled a,
+.datatable-pagination .disabled a:focus,
+.datatable-pagination .disabled a:hover {
+    color: var(--bs-secondary-color) !important;
+    background-color: var(--bs-tertiary-bg) !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}

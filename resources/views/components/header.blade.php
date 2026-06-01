@@ -17,6 +17,13 @@
         <!--end::Start Navbar Links-->
         <!--begin::End Navbar Links-->
         <ul class="navbar-nav ms-auto">
+            <!-- Theme Toggle Button -->
+            <li class="nav-item me-2">
+                <button class="nav-link btn btn-link border-0 px-2" id="themeToggleBtn" title="Ubah Tema"
+                    style="padding-top: 8px;">
+                    <i class="bi bi-moon-fill" id="themeToggleIcon" style="font-size: 1.1rem;"></i>
+                </button>
+            </li>
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">

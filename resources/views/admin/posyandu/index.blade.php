@@ -30,7 +30,17 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             <div class="table-responsive">
-                                <x-table id="posyanduTable" :headers="['No', 'Desa', 'Nama Posyandu', 'Alamat', 'Latitude', 'Longitude', 'Status', 'Keterangan', 'Aksi']">
+                                <x-table id="posyanduTable" :headers="[
+                                    'No',
+                                    'Desa',
+                                    'Nama Posyandu',
+                                    'Alamat',
+                                    'Latitude',
+                                    'Longitude',
+                                    'Status',
+                                    'Keterangan',
+                                    'Aksi',
+                                ]">
                                     @foreach ($posyandu as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
@@ -48,13 +58,16 @@
                                             </td>
                                             <td>{{ $item->keterangan ?? '-' }}</td>
                                             <td class="text-center">
-                                                <a href="{{ route('posyandu.edit', $item) }}" class="btn btn-sm btn-primary" title="Edit">
+                                                <a href="{{ route('posyandu.edit', $item) }}"
+                                                    class="btn btn-sm btn-primary" title="Edit">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <form action="{{ route('posyandu.destroy', $item) }}" method="POST" style="display:inline;" id="delete-form-{{ $item->id }}">
+                                                <form action="{{ route('posyandu.destroy', $item) }}" method="POST"
+                                                    style="display:inline;" id="delete-form-{{ $item->id }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger delete-btn" data-form-id="{{ $item->id }}" title="Delete">
+                                                    <button type="button" class="btn btn-sm btn-danger delete-btn"
+                                                        data-form-id="{{ $item->id }}" title="Delete">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
