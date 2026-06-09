@@ -5,24 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAkunRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use SweetAlert2\Laravel\Swal;
 
 class AkunController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->input('search');
-        $sortBy = $request->input('sort_by', 'id');
-        $sortDir = $request->input('sort_dir', 'desc');
-        $perPage = $request->input('per_page', 10);
+        $akun = User::orderBy('id', 'asc')->get();
 
-        $akun = User::search($search)
-            ->sort($sortBy, $sortDir)
-            ->paginate($perPage)
-            ->withQueryString();
-
-        return view('admin.akun.index', compact('akun', 'search', 'sortBy', 'sortDir', 'perPage'));
+        return view('admin.akun.index', compact('akun'));
     }
 
     public function create()
@@ -57,7 +48,7 @@ class AkunController extends Controller
 
     public function destroy(User $akun)
     {
-        $akun->delete();
+        User::destroy($akun->id);
 
         Swal::success([
             'title' => 'Berhasil!',

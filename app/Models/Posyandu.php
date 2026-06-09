@@ -24,6 +24,11 @@ class Posyandu extends Model
         'keterangan',
     ];
 
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
+    ];
+
     public function desa(): BelongsTo
     {
         return $this->belongsTo(Desa::class);

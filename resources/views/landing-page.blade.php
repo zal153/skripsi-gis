@@ -162,16 +162,39 @@
                     showLoading(false);
                     return;
                 }
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        userLatLng = [pos.coords.latitude, pos.coords.longitude];
-                        processSearch(userLatLng);
-                    },
-                    () => {
+
+                let didCallback = false;
+
+                // Manual timeout fallback if browser's geolocation hangs
+                const manualTimeout = setTimeout(() => {
+                    if (!didCallback) {
+                        didCallback = true;
+                        console.warn("Geolocation manual timeout triggered. Falling back to default center.");
                         userLatLng = DEFAULT_CENTER;
                         processSearch(userLatLng, true);
+                    }
+                }, 7000);
+
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        if (!didCallback) {
+                            didCallback = true;
+                            clearTimeout(manualTimeout);
+                            userLatLng = [pos.coords.latitude, pos.coords.longitude];
+                            processSearch(userLatLng);
+                        }
+                    },
+                    () => {
+                        if (!didCallback) {
+                            didCallback = true;
+                            clearTimeout(manualTimeout);
+                            userLatLng = DEFAULT_CENTER;
+                            processSearch(userLatLng, true);
+                        }
                     }, {
-                        timeout: 8000
+                        enableHighAccuracy: true,
+                        timeout: 6000,
+                        maximumAge: 0
                     }
                 );
             }

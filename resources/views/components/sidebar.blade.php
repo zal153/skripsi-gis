@@ -55,13 +55,13 @@
                         <p>Titik Jalan</p>
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('admin.mae-test') }}"
                         class="nav-link {{ request()->routeIs('admin.mae-test') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-calculator-fill"></i>
                         <p>Pengujian MAE</p>
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a href="{{ route('akun.index') }}"
                         class="nav-link {{ request()->routeIs('admin.akun') ? 'active' : '' }}">

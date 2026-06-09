@@ -3,23 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-// use Illuminate\Http\Request;
-use App\Models\Desa;
-use App\Models\Jalan;
-use App\Models\Posyandu;
-use App\Models\TitikJalan;
 use App\Services\DijkstraService;
 use App\Services\HaversineService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $jumlahDesa = Desa::count();
-        $jumlahPosyandu = Posyandu::count();
-        $jumlahJalan = Jalan::count();
-        $jumlahTitik = TitikJalan::count();
+        $jumlahDesa = DB::table('desa')->count();
+        $jumlahPosyandu = DB::table('posyandu')->count();
+        $jumlahJalan = DB::table('jalan')->count();
+        $jumlahTitik = DB::table('titik_jalan')->count();
 
         return view('admin.dashboard.index', compact('jumlahDesa', 'jumlahPosyandu', 'jumlahJalan', 'jumlahTitik'));
     }
@@ -42,7 +38,7 @@ class DashboardController extends Controller
         $seed = $request->input('seed', 12345);
         mt_srand($seed);
 
-        $posyandus = Posyandu::all();
+        $posyandus = DB::table('posyandu')->get();
         $testCases = [];
 
         if ($posyandus->isNotEmpty()) {
