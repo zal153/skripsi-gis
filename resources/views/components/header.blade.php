@@ -30,28 +30,26 @@
                     <img src="{{ asset('assets/img/user2-160x160.jpg') }}" class="user-image rounded-circle shadow"
                         alt="User Image" />
                 </a>
-                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                    <!--begin::User Image-->
-                    <li class="user-header text-bg-primary">
-                        <img src="{{ asset('assets/img/user2-160x160.jpg') }}" class="rounded-circle shadow"
-                            alt="User Image" />
-                        <p>
-                            Admin
-                            <small>Posyandu Locator</small>
-                        </p>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" style="min-width: 160px; padding: 6px 0;">
+                    <li>
+                        <a href="{{ route('profile.edit') }}" class="dropdown-item py-2 d-flex align-items-center gap-2 text-dark">
+                            <i class="bi bi-person-fill text-muted"></i>
+                            <span>Profile</span>
+                        </a>
                     </li>
-                    <!--end::User Image-->
-                    <!--begin::Menu Footer-->
-                    <li class="user-footer">
-                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                    <li>
+                        <hr class="dropdown-divider my-1 border-light-subtle">
+                    </li>
+                    <li>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
-                        <a href="#"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                            class="btn btn-default btn-flat float-end">Sign out</a>
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                            class="dropdown-item py-2 d-flex align-items-center gap-2 text-danger">
+                            <i class="bi bi-box-arrow-right text-danger"></i>
+                            <span>Logout</span>
+                        </a>
                     </li>
-                    <!--end::Menu Footer-->
                 </ul>
             </li>
             <!--end::User Menu Dropdown-->

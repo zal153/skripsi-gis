@@ -29,10 +29,11 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             <div class="table-responsive">
-                                <x-table id="akunTable" :headers="['No.', 'Nama', 'Email', 'Aksi']">
+                                <x-table id="akunTable" :headers="['No.', 'ID', 'Nama', 'Email', 'Aksi']">
                                     @foreach ($akun as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $item->id }}</td>
                                             <td>{{ $item->name }}</td>
                                             <td>{{ $item->email }}</td>
                                             <td class="text-center">

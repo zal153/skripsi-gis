@@ -157,63 +157,21 @@
             // ─── Cari Terdekat ────────────────────────────────────────────────────────
             function cariTerdekat() {
                 showLoading(true);
-                if (!navigator.geolocation) {
-                    alert("Geolocation tidak didukung browser ini.");
-                    showLoading(false);
-                    return;
-                }
 
-                let didCallback = false;
+                setTimeout(() => {
+                    // Menggunakan koordinat acak Kecamatan Arjasa untuk simulasi lokasi pengguna (Demo)
+                    const centerLat = -8.1050;
+                    const centerLng = 113.7400;
 
-                // Manual timeout fallback if browser's geolocation hangs
-                const manualTimeout = setTimeout(() => {
-                    if (!didCallback) {
-                        didCallback = true;
-                        console.warn("Geolocation manual timeout triggered. Falling back to default center.");
-                        userLatLng = DEFAULT_CENTER;
-                        processSearch(userLatLng, true);
-                    }
-                }, 7000);
+                    const randomLat = centerLat + ((Math.random() - 0.5) * 0.04);
+                    const randomLng = centerLng + ((Math.random() - 0.5) * 0.04);
 
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        if (!didCallback) {
-                            didCallback = true;
-                            clearTimeout(manualTimeout);
-                            userLatLng = [pos.coords.latitude, pos.coords.longitude];
-                            processSearch(userLatLng);
-                        }
-                    },
-                    () => {
-                        if (!didCallback) {
-                            didCallback = true;
-                            clearTimeout(manualTimeout);
-                            userLatLng = DEFAULT_CENTER;
-                            processSearch(userLatLng, true);
-                        }
-                    }, {
-                        enableHighAccuracy: true,
-                        timeout: 6000,
-                        maximumAge: 0
-                    }
-                );
+                    userLatLng = [randomLat, randomLng];
+                    processSearch(userLatLng, true, false);
+                }, 1500); // Jeda 1.5 detik untuk simulasi pengambilan GPS yang realistis saat sidang
             }
 
-            // ─── Testing Random Arjasa ────────────────────────────────────────────────
-            function testingArjasa() {
-                showLoading(true);
-
-                const centerLat = -8.1050;
-                const centerLng = 113.7400;
-
-                const randomLat = centerLat + ((Math.random() - 0.5) * 0.04);
-                const randomLng = centerLng + ((Math.random() - 0.5) * 0.04);
-
-                userLatLng = [randomLat, randomLng];
-                processSearch(userLatLng, true, true);
-            }
-
-            function processSearch(latlng, isFallback = false, shouldShowRoute = true) {
+            function processSearch(latlng, isFallback = false, shouldShowRoute = false) {
                 const radius = parseInt(document.getElementById('radiusSlider').value);
 
                 if (userMarker) map.removeLayer(userMarker);
@@ -388,7 +346,7 @@
                                 });
 
                                 const overlapRatio = sharedCount / Math.max(1, altKeys.length);
-                                if (overlapRatio >= 0.85) {
+                                if (overlapRatio >= 0.50) {
                                     isDuplicate = true;
                                     break;
                                 }
@@ -452,11 +410,9 @@
 
                             const duration = calculateDuration(routeData.distance, currentTransportMode);
                             line.bindPopup(`
-                                <div class="p-1">
-                                    <h5 class="font-bold text-purple-900 text-xs mb-1" style="font-family:'Plus Jakarta Sans',sans-serif;">${isMainRoute ? 'Rute Utama (Dijkstra)' : `Rute Alternatif ${routeIndex} (Yen)`}</h5>
-                                    <p class="text-3xs text-gray-600 mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-geo-alt"></i> Jarak: <b>${routeData.distance.toFixed(2)} km</b></p>
-                                    <p class="text-3xs text-purple-600 font-semibold mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-clock"></i> Estimasi: <b>${duration}</b></p>
-                                    <p class="text-3xs text-gray-400" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-cpu"></i> Backend: ${searchTimeMs} ms</p>
+                                <div class="p-1" style="font-family:'Plus Jakarta Sans',sans-serif;">
+                                    <p class="text-xs text-gray-700 mb-1"><i class="bi bi-geo-alt"></i> Jarak: <b>${routeData.distance.toFixed(2)} km</b></p>
+                                    <p class="text-xs text-purple-600 font-semibold mb-0"><i class="bi bi-clock"></i> Durasi: <b>${duration}</b></p>
                                 </div>
                             `);
 
@@ -499,10 +455,9 @@
                 line.searchTimeMs = "0.00";
 
                 line.bindPopup(`
-                    <div class="p-1">
-                        <h5 class="font-bold text-purple-900 text-xs mb-1" style="font-family:'Plus Jakarta Sans',sans-serif;">Rute Garis Lurus (Fallback)</h5>
-                        <p class="text-3xs text-gray-600 mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-geo-alt"></i> Jarak: <b>${distance.toFixed(2)} km</b></p>
-                        <p class="text-3xs text-purple-600 font-semibold mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-clock"></i> Estimasi: <b>${duration}</b></p>
+                    <div class="p-1" style="font-family:'Plus Jakarta Sans',sans-serif;">
+                        <p class="text-xs text-gray-700 mb-1"><i class="bi bi-geo-alt"></i> Jarak: <b>${distance.toFixed(2)} km</b></p>
+                        <p class="text-xs text-purple-600 font-semibold mb-0"><i class="bi bi-clock"></i> Durasi: <b>${duration}</b></p>
                     </div>
                 `);
 
@@ -601,11 +556,9 @@
                 routeLayers.forEach(line => {
                     const duration = calculateDuration(line.routeDistance, currentTransportMode);
                     line.setPopupContent(`
-                        <div class="p-1">
-                            <h5 class="font-bold text-purple-900 text-xs mb-1" style="font-family:'Plus Jakarta Sans',sans-serif;">${line.isMainRoute ? 'Rute Utama (Dijkstra)' : `Rute Alternatif ${line.routeIndex} (Yen)`}</h5>
-                            <p class="text-3xs text-gray-600 mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-geo-alt"></i> Jarak: <b>${line.routeDistance.toFixed(2)} km</b></p>
-                            <p class="text-3xs text-purple-600 font-semibold mb-0.5" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-clock"></i> Estimasi: <b>${duration}</b></p>
-                            <p class="text-3xs text-gray-400" style="font-family:'Plus Jakarta Sans',sans-serif;"><i class="bi bi-cpu"></i> Backend: ${line.searchTimeMs} ms</p>
+                        <div class="p-1" style="font-family:'Plus Jakarta Sans',sans-serif;">
+                            <p class="text-xs text-gray-700 mb-1"><i class="bi bi-geo-alt"></i> Jarak: <b>${line.routeDistance.toFixed(2)} km</b></p>
+                            <p class="text-xs text-purple-600 font-semibold mb-0"><i class="bi bi-clock"></i> Durasi: <b>${duration}</b></p>
                         </div>
                     `);
                 });
@@ -619,9 +572,10 @@
                     btn.classList.remove('active');
                 });
 
-                if (mode === 'motorcycle') document.getElementById('btnModeMotor').classList.add('active');
-                if (mode === 'car') document.getElementById('btnModeMobil').classList.add('active');
-                if (mode === 'walking') document.getElementById('btnModeJalan').classList.add('active');
+                const btnMotor = document.getElementById('btnModeMotor');
+                const btnMobil = document.getElementById('btnModeMobil');
+                if (mode === 'motorcycle' && btnMotor) btnMotor.classList.add('active');
+                if (mode === 'car' && btnMobil) btnMobil.classList.add('active');
 
                 document.querySelectorAll('.result-card').forEach(card => {
                     const dist = parseFloat(card.getAttribute('data-distance'));
@@ -815,18 +769,196 @@
                 btn.style.opacity = show ? '0.6' : '1';
             }
 
-            // ─── Modal ────────────────────────────────────────────────────────────────
+            // ─── Modal & Reports Tab ──────────────────────────────────────────────────
+            let currentModalTab = 'form';
+
             function openModal() {
                 document.getElementById('modalOverlay').classList.add('active');
+                updateReportCountBadge();
             }
 
             function closeModal() {
                 document.getElementById('modalOverlay').classList.remove('active');
+                setTimeout(() => {
+                    resetReportModalState();
+                    switchModalTab('form');
+                }, 200);
             }
 
             document.getElementById('modalOverlay').addEventListener('click', function(e) {
                 if (e.target === this) closeModal();
             });
+
+            function switchModalTab(tab) {
+                currentModalTab = tab;
+                const tabFormBtn = document.getElementById('tabFormBtn');
+                const tabListBtn = document.getElementById('tabListBtn');
+                const tabFormContainer = document.getElementById('tabFormContainer');
+                const tabListContainer = document.getElementById('tabListContainer');
+
+                if (tab === 'form') {
+                    tabFormBtn.className = "flex-1 pb-2 text-center text-xs font-bold text-purple-600 border-b-2 border-purple-500 focus:outline-none transition-all";
+                    tabListBtn.className = "flex-1 pb-2 text-center text-xs font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 focus:outline-none transition-all";
+                    
+                    tabFormContainer.classList.remove('hidden');
+                    tabListContainer.classList.add('hidden');
+                } else {
+                    tabFormBtn.className = "flex-1 pb-2 text-center text-xs font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 focus:outline-none transition-all";
+                    tabListBtn.className = "flex-1 pb-2 text-center text-xs font-bold text-purple-600 border-b-2 border-purple-500 focus:outline-none transition-all";
+                    
+                    tabFormContainer.classList.add('hidden');
+                    tabListContainer.classList.remove('hidden');
+                    
+                    fetchReports();
+                }
+            }
+
+            async function updateReportCountBadge() {
+                try {
+                    const response = await fetch('/api/v1/laporan');
+                    const json = await response.json();
+                    if (json.success) {
+                        const badge = document.getElementById('reportCountBadge');
+                        if (badge) badge.textContent = json.data.length;
+                    }
+                } catch (error) {
+                    console.error('Gagal memperbarui jumlah laporan:', error);
+                }
+            }
+
+            async function fetchReports() {
+                const loading = document.getElementById('listLoadingState');
+                const empty = document.getElementById('listEmptyState');
+                const content = document.getElementById('reportsListContent');
+
+                loading.classList.remove('hidden');
+                empty.classList.add('hidden');
+                content.innerHTML = '';
+
+                try {
+                    const response = await fetch('/api/v1/laporan');
+                    const json = await response.json();
+                    
+                    loading.classList.add('hidden');
+                    
+                    if (!json.success || json.data.length === 0) {
+                        empty.classList.remove('hidden');
+                        const badge = document.getElementById('reportCountBadge');
+                        if (badge) badge.textContent = '0';
+                        return;
+                    }
+
+                    const badge = document.getElementById('reportCountBadge');
+                    if (badge) badge.textContent = json.data.length;
+
+                    json.data.forEach(report => {
+                        const reportItem = document.createElement('div');
+                        reportItem.className = "border-b border-gray-100/60 pb-3 mb-3 last:border-0 last:pb-0";
+
+                        let repliesHtml = '';
+                        if (report.balasans && report.balasans.length > 0) {
+                            repliesHtml = `<div class="ml-8 mt-2.5 flex flex-col gap-2">`;
+                            report.balasans.forEach(reply => {
+                                repliesHtml += `
+                                    <div class="flex items-start gap-2 bg-gray-50/70 p-2 rounded-xl border border-gray-100/50">
+                                        <div class="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center flex-shrink-0">
+                                            <i class="bi bi-patch-check-fill text-emerald-500 text-[10px]"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <span class="font-bold text-emerald-700 text-[10px] flex items-center gap-0.5">
+                                                    ${reply.admin_name}
+                                                    <span class="bg-emerald-100 text-emerald-700 rounded px-1 text-[8px] font-extrabold uppercase scale-90">Petugas</span>
+                                                </span>
+                                                <span class="text-gray-400 text-[9px] flex-shrink-0">${reply.time_ago}</span>
+                                            </div>
+                                            <p class="text-[11px] text-gray-600 leading-normal mt-0.5">${reply.pesan}</p>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            repliesHtml += `</div>`;
+                        }
+
+                        const noteHtml = report.keterangan 
+                            ? `<p class="text-[11px] text-gray-400 leading-normal mt-0.5 italic">"${report.keterangan}"</p>` 
+                            : '';
+
+                        reportItem.innerHTML = `
+                            <div class="flex items-start gap-2.5">
+                                <div class="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0 border border-purple-100">
+                                    <i class="bi bi-person text-purple-500 text-sm"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="font-bold text-gray-900 text-xs truncate">Masyarakat Jember</span>
+                                        <span class="text-gray-400 text-[9px] flex-shrink-0">${report.time_ago}</span>
+                                    </div>
+                                    <p class="text-xs font-semibold text-purple-600 mt-0.5">${report.nama_posyandu}</p>
+                                    <p class="text-[11px] text-gray-500 leading-normal mt-0.5 font-medium">Alamat: ${report.alamat}</p>
+                                    ${noteHtml}
+                                </div>
+                            </div>
+                            ${repliesHtml}
+                        `;
+                        content.appendChild(reportItem);
+                    });
+
+                } catch (error) {
+                    loading.classList.add('hidden');
+                    empty.classList.remove('hidden');
+                    console.error('Gagal mengambil laporan:', error);
+                }
+            }
+
+            async function submitReport(event) {
+                event.preventDefault();
+                const form = document.getElementById('reportForm');
+                const nama = document.getElementById('report_nama').value;
+                const alamat = document.getElementById('report_alamat').value;
+                const keterangan = document.getElementById('report_keterangan').value;
+                const token = form.querySelector('input[name="_token"]').value;
+
+                try {
+                    const response = await fetch('/api/v1/laporan', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            nama_posyandu: nama,
+                            alamat: alamat,
+                            keterangan: keterangan
+                        })
+                    });
+
+                    const json = await response.json();
+
+                    if (json.success) {
+                        document.getElementById('reportFormContent').classList.add('hidden');
+                        document.getElementById('reportSuccessContainer').classList.remove('hidden');
+                        updateReportCountBadge();
+                    } else {
+                        alert('Gagal mengirim laporan. Silakan coba lagi.');
+                    }
+                } catch (error) {
+                    console.error('Error submitting report:', error);
+                    alert('Terjadi kesalahan koneksi. Silakan coba lagi.');
+                }
+            }
+
+            function resetReportModal() {
+                document.getElementById('reportForm').reset();
+                resetReportModalState();
+                closeModal();
+            }
+
+            function resetReportModalState() {
+                document.getElementById('reportFormContent').classList.remove('hidden');
+                document.getElementById('reportSuccessContainer').classList.add('hidden');
+            }
 
             function bootMapWhenReady() {
                 if (typeof window.L === 'undefined') {

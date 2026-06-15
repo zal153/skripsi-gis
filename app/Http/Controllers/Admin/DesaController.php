@@ -83,4 +83,34 @@ class DesaController extends Controller
 
         return redirect()->route('desa.index');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (empty($ids)) {
+            Swal::error([
+                'title' => 'Gagal!',
+                'text' => 'Tidak ada data desa yang dipilih',
+            ]);
+
+            return redirect()->route('desa.index');
+        }
+
+        try {
+            $idsArray = is_array($ids) ? $ids : explode(',', $ids);
+            Desa::whereIn('id', $idsArray)->delete();
+
+            Swal::success([
+                'title' => 'Berhasil!',
+                'text' => 'Data desa terpilih berhasil dihapus',
+            ]);
+        } catch (\Exception $e) {
+            Swal::error([
+                'title' => 'Gagal!',
+                'text' => 'Terjadi kesalahan saat menghapus data: '.$e->getMessage(),
+            ]);
+        }
+
+        return redirect()->route('desa.index');
+    }
 }

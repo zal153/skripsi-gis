@@ -63,8 +63,15 @@
                     </a>
                 </li> --}}
                 <li class="nav-item">
+                    <a href="{{ route('laporan.index') }}"
+                        class="nav-link {{ request()->routeIs('laporan.index') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-chat-left-text-fill"></i>
+                        <p>Laporan Pengguna</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('akun.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.akun') ? 'active' : '' }}">
+                        class="nav-link {{ request()->routeIs('akun.index') || request()->routeIs('akun.create') || request()->routeIs('akun.edit') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-person-fill"></i>
                         <p>Akun</p>
                     </a>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use SweetAlert2\Laravel\Swal;
 
 class ProfileController extends Controller
 {
@@ -33,6 +34,11 @@ class ProfileController extends Controller
         }
 
         $request->user()->save();
+
+        Swal::success([
+            'title' => 'Berhasil!',
+            'text' => 'Profil Anda berhasil diperbarui',
+        ]);
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

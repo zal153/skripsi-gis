@@ -29,14 +29,10 @@
         </button>
     </div>
 
-    <!-- Radius filter & Demo Button -->
+    <!-- Radius filter -->
     <div class="bg-gray-50 border border-gray-100 rounded-xl p-3">
         <div class="flex justify-between items-center mb-2">
             <label class="text-xs font-semibold text-gray-500 block">Radius Pencarian</label>
-            <button onclick="testingArjasa()"
-                class="text-3xs text-gray-700 hover:text-gray-900 font-bold bg-white hover:bg-gray-50 px-2 py-0.5 rounded-lg border border-gray-200 transition">
-                <i class="bi bi-play-circle-fill"></i> Demo
-            </button>
         </div>
         <div class="flex items-center gap-3">
             <input type="range" id="radiusSlider" min="1" max="20" value="5"
@@ -50,10 +46,6 @@
     <div class="hidden flex-col gap-1.5" id="transportSelectorContainer">
         <label class="text-xs font-semibold text-gray-500 block">Mode Perjalanan</label>
         <div class="transport-selector">
-            <button class="transport-btn" id="btnModeJalan" onclick="selectTransportMode('walking')">
-                <i class="bi bi-person-walking"></i>
-                <span>Jalan</span>
-            </button>
             <button class="transport-btn" id="btnModeMobil" onclick="selectTransportMode('car')">
                 <i class="bi bi-car-front-fill"></i>
                 <span>Mobil</span>
@@ -129,9 +121,17 @@
 
     <hr class="border-gray-100/60" />
 
-    {{-- <!-- Feedback -->
-    <button class="feedback-btn" onclick="openModal()">
-        <i class="bi bi-chat-dots-fill"></i>
-        Kritik dan Saran
-    </button> --}}
+    <div class="flex gap-2 w-full mt-auto">
+        <!-- Pelaporan Button -->
+        <button class="feedback-btn flex-1 !py-2.5 flex items-center justify-center gap-1.5" onclick="openModal()">
+            <i class="bi bi-exclamation-triangle-fill text-amber-500"></i>
+            <span>Pelaporan</span>
+        </button>
+
+        <!-- Login Button -->
+        <a href="{{ route('login') }}" class="feedback-btn flex-1 !py-2.5 no-underline text-center justify-center flex items-center gap-1.5" style="text-decoration: none;">
+            <i class="bi bi-box-arrow-in-right text-purple-500"></i>
+            <span>Login</span>
+        </a>
+    </div>
 </aside>

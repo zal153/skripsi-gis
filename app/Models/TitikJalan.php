@@ -22,6 +22,11 @@ class TitikJalan extends Model
         'source',
     ];
 
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
+    ];
+
     public function jalanAwal(): HasMany
     {
         return $this->hasMany(Jalan::class, 'titik_awal_id');

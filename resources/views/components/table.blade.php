@@ -7,7 +7,7 @@
     <thead>
         <tr>
             @foreach ($headers as $header)
-                <th class="text-start">{{ $header }}</th>
+                <th class="text-start">{!! $header !!}</th>
             @endforeach
         </tr>
     </thead>

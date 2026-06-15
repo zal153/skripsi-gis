@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAkunRequest;
+use App\Http\Requests\Admin\UpdateAkunRequest;
 use App\Models\User;
 use SweetAlert2\Laravel\Swal;
 
@@ -40,6 +41,41 @@ class AkunController extends Controller
             Swal::error([
                 'title' => 'Gagal!',
                 'text' => 'Terjadi kesalahan saat menyimpan data: '.$e->getMessage(),
+            ]);
+
+            return back()->withInput();
+        }
+    }
+
+    public function edit(User $akun)
+    {
+        return view('admin.akun.edit', compact('akun'));
+    }
+
+    public function update(UpdateAkunRequest $request, User $akun)
+    {
+        try {
+            $data = [
+                'name' => $request->validated('name'),
+                'email' => $request->validated('email'),
+            ];
+
+            if ($request->filled('password')) {
+                $data['password'] = $request->validated('password');
+            }
+
+            $akun->update($data);
+
+            Swal::success([
+                'title' => 'Berhasil!',
+                'text' => 'Akun berhasil diperbarui',
+            ]);
+
+            return redirect()->route('akun.index');
+        } catch (\Exception $e) {
+            Swal::error([
+                'title' => 'Gagal!',
+                'text' => 'Terjadi kesalahan saat memperbarui data: '.$e->getMessage(),
             ]);
 
             return back()->withInput();

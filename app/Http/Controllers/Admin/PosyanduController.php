@@ -91,4 +91,34 @@ class PosyanduController extends Controller
 
         return redirect()->route('posyandu.index');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (empty($ids)) {
+            Swal::error([
+                'title' => 'Gagal!',
+                'text' => 'Tidak ada data posyandu yang dipilih',
+            ]);
+
+            return redirect()->route('posyandu.index');
+        }
+
+        try {
+            $idsArray = is_array($ids) ? $ids : explode(',', $ids);
+            Posyandu::whereIn('id', $idsArray)->delete();
+
+            Swal::success([
+                'title' => 'Berhasil!',
+                'text' => 'Data posyandu terpilih berhasil dihapus',
+            ]);
+        } catch (\Exception $e) {
+            Swal::error([
+                'title' => 'Gagal!',
+                'text' => 'Terjadi kesalahan saat menghapus data: '.$e->getMessage(),
+            ]);
+        }
+
+        return redirect()->route('posyandu.index');
+    }
 }

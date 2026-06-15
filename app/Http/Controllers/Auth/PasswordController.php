@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use SweetAlert2\Laravel\Swal;
 
 class PasswordController extends Controller
 {
@@ -22,6 +23,11 @@ class PasswordController extends Controller
 
         $request->user()->update([
             'password' => Hash::make($validated['password']),
+        ]);
+
+        Swal::success([
+            'title' => 'Berhasil!',
+            'text' => 'Password Anda berhasil diperbarui',
         ]);
 
         return back()->with('status', 'password-updated');

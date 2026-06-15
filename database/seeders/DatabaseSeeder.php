@@ -24,13 +24,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ── 1. PENGGUNA (Admin) ───────────────────────────────────────────
-        DB::table('pengguna')->insert([
-            'nama' => 'Admin',
-            'email' => 'admin@yahoo.com',
-            'password' => Hash::make('password'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        if (DB::table('users')->where('email', 'admin@yahoo.com')->doesntExist()) {
+            DB::table('users')->insert([
+                'name' => 'Admin',
+                'email' => 'admin@yahoo.com',
+                'password' => Hash::make('password'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // ── 2. DESA ──────────────────────────────────────────────────────
         // 6 desa di Kecamatan Arjasa, Kabupaten Jember
@@ -43,12 +45,14 @@ class DatabaseSeeder extends Seeder
             ['nama_desa' => 'Kamal'],
         ];
 
-        foreach ($desa as $item) {
-            DB::table('desa')->insert([
-                'nama_desa' => $item['nama_desa'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        if (DB::table('desa')->doesntExist()) {
+            foreach ($desa as $item) {
+                DB::table('desa')->insert([
+                    'nama_desa' => $item['nama_desa'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
 
         // ── 3. POSYANDU ──────────────────────────────────────────────────
@@ -146,18 +150,24 @@ class DatabaseSeeder extends Seeder
             [6, 'Manggis 41', 'Dusun Gumitir RT 001 RW 009',  -8.1035, 113.7595], // ✅
         ];
 
-        foreach ($posyanduData as $p) {
-            DB::table('posyandu')->insert([
-                'desa_id' => $p[0],
-                'nama_posyandu' => $p[1],
-                'alamat' => $p[2].', Desa '.$desa[$p[0] - 1]['nama_desa'].', Kec. Arjasa, Kab. Jember',
-                'latitude' => (string) $p[3],
-                'longitude' => (string) $p[4],
-                'status' => 'Aktif',
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        if (DB::table('posyandu')->doesntExist()) {
+            foreach ($posyanduData as $p) {
+                DB::table('posyandu')->insert([
+                    'desa_id' => $p[0],
+                    'nama_posyandu' => $p[1],
+                    'alamat' => $p[2].', Desa '.$desa[$p[0] - 1]['nama_desa'].', Kec. Arjasa, Kab. Jember',
+                    'latitude' => (string) $p[3],
+                    'longitude' => (string) $p[4],
+                    'status' => 'Aktif',
+                    'keterangan' => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
+
+        $this->call([
+            LaporanSeeder::class,
+        ]);
     }
 }
