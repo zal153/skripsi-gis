@@ -29,7 +29,8 @@
                                 @csrf
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label for="titik_awal_id" class="form-label">Titik Awal</label>
+                                        <label for="titik_awal_id" class="form-label">Titik Awal <span
+                                                class="text-danger">*</span></label>
                                         <select name="titik_awal_id" id="titik_awal_id"
                                             class="form-control @error('titik_awal_id') is-invalid @enderror" required>
                                             <option value="">-- Pilih Titik Awal --</option>
@@ -46,7 +47,8 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="titik_akhir_id" class="form-label">Titik Akhir</label>
+                                        <label for="titik_akhir_id" class="form-label">Titik Akhir <span
+                                                class="text-danger">*</span></label>
                                         <select name="titik_akhir_id" id="titik_akhir_id"
                                             class="form-control @error('titik_akhir_id') is-invalid @enderror" required>
                                             <option value="">-- Pilih Titik Akhir --</option>

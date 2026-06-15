@@ -32,7 +32,8 @@
                                 @method('PUT')
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label for="nama_desa" class="form-label">Nama Desa</label>
+                                        <label for="nama_desa" class="form-label">Nama Desa <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="nama_desa" id="nama_desa"
                                             class="form-control @error('nama_desa') is-invalid @enderror"
                                             value="{{ old('nama_desa', $desa->nama_desa) }}"

@@ -11,12 +11,14 @@
 
         <!-- Current Password -->
         <div class="mb-3">
-            <label for="update_password_current_password" class="form-label">Password Saat Ini</label>
+            <label for="update_password_current_password" class="form-label">Password Saat Ini <span
+                    class="text-danger">*</span></label>
             <div class="input-group">
                 <input type="password" name="current_password" id="update_password_current_password"
                     class="form-control @error('current_password', 'updatePassword') is-invalid @enderror"
                     placeholder="Masukkan password saat ini" required autocomplete="current-password">
-                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('update_password_current_password', this)">
+                <button class="btn btn-outline-secondary" type="button"
+                    onclick="togglePasswordVisibility('update_password_current_password', this)">
                     <i class="bi bi-eye"></i>
                 </button>
             </div>
@@ -27,12 +29,14 @@
 
         <!-- New Password -->
         <div class="mb-3">
-            <label for="update_password_password" class="form-label">Password Baru</label>
+            <label for="update_password_password" class="form-label">Password Baru <span
+                    class="text-danger">*</span></label>
             <div class="input-group">
                 <input type="password" name="password" id="update_password_password"
                     class="form-control @error('password', 'updatePassword') is-invalid @enderror"
                     placeholder="Masukkan password baru" required autocomplete="new-password">
-                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('update_password_password', this)">
+                <button class="btn btn-outline-secondary" type="button"
+                    onclick="togglePasswordVisibility('update_password_password', this)">
                     <i class="bi bi-eye"></i>
                 </button>
             </div>
@@ -44,12 +48,14 @@
 
         <!-- Confirm Password -->
         <div class="mb-3">
-            <label for="update_password_password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+            <label for="update_password_password_confirmation" class="form-label">Konfirmasi Password Baru <span
+                    class="text-danger">*</span></label>
             <div class="input-group">
                 <input type="password" name="password_confirmation" id="update_password_password_confirmation"
                     class="form-control @error('password_confirmation', 'updatePassword') is-invalid @enderror"
                     placeholder="Ulangi password baru" required autocomplete="new-password">
-                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('update_password_password_confirmation', this)">
+                <button class="btn btn-outline-secondary" type="button"
+                    onclick="togglePasswordVisibility('update_password_password_confirmation', this)">
                     <i class="bi bi-eye"></i>
                 </button>
             </div>

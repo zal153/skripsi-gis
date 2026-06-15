@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method bool update(array $attributes = [], array $options = [])
+ */
 class Desa extends Model
 {
     /** @use HasFactory<DesaFactory> */

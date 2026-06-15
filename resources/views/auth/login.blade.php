@@ -42,8 +42,7 @@
                     <div class="mb-3">
                         <label for="email" class="form-label">Masukkan Email</label>
                         <div class="input-group">
-                            <input type="email" name="email" id="email"
-                                class="form-control" placeholder="Email"
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Email"
                                 value="{{ old('email') }}" required autofocus>
                             <div class="input-group-text">
                                 <span class="bi bi-envelope"></span>
@@ -55,9 +54,8 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">Masukkan Password</label>
                         <div class="input-group">
-                            <input type="password" name="password" id="password"
-                                class="form-control" placeholder="Password"
-                                required>
+                            <input type="password" name="password" id="password" class="form-control"
+                                placeholder="Password" required>
                             <button type="button" class="input-group-text" id="togglePassword"
                                 style="cursor: pointer;">
                                 <span class="bi bi-eye"></span>
@@ -68,7 +66,8 @@
                     <!-- Forgot Password Link -->
                     <div class="d-flex justify-content-end mb-3">
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-sm text-decoration-none" style="font-size: 13px;">Lupa Password?</a>
+                            <a href="{{ route('password.request') }}" class="text-sm text-decoration-none"
+                                style="font-size: 13px;">Lupa Password?</a>
                         @endif
                     </div>
 
@@ -86,6 +85,13 @@
                         </div>
                     </div>
                 </form>
+
+                <!-- Back to Home -->
+                <div class="mt-3 text-center">
+                    <a href="/" class="text-decoration-none text-secondary" style="font-size: 13px;">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali ke Halaman Utama
+                    </a>
+                </div>
             </div>
             <!-- /.login-card-body -->
         </div>

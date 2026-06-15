@@ -33,7 +33,8 @@
                                 <div class="card-body">
                                     <!-- Nama -->
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">Nama</label>
+                                        <label for="name" class="form-label">Nama <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="name" id="name"
                                             class="form-control @error('name') is-invalid @enderror"
                                             value="{{ old('name', $akun->name) }}" placeholder="Masukkan nama" required>
@@ -44,7 +45,8 @@
 
                                     <!-- Email -->
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
+                                        <label for="email" class="form-label">Email <span
+                                                class="text-danger">*</span></label>
                                         <input type="email" name="email" id="email"
                                             class="form-control @error('email') is-invalid @enderror"
                                             value="{{ old('email', $akun->email) }}" placeholder="Masukkan email"
@@ -61,7 +63,8 @@
                                             <input type="password" name="current_password" id="current_password"
                                                 class="form-control @error('current_password') is-invalid @enderror"
                                                 placeholder="Masukkan password awal (saat ini)">
-                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('current_password', this)">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                onclick="togglePasswordVisibility('current_password', this)">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         </div>
@@ -77,11 +80,13 @@
                                             <input type="password" name="password" id="password"
                                                 class="form-control @error('password') is-invalid @enderror"
                                                 placeholder="Masukkan password baru">
-                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('password', this)">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                onclick="togglePasswordVisibility('password', this)">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         </div>
-                                        <small class="form-text text-muted">Minimal 8 karakter. Kosongkan jika password tidak diubah.</small>
+                                        <small class="form-text text-muted">Minimal 8 karakter. Kosongkan jika password
+                                            tidak diubah.</small>
                                         @error('password')
                                             <div class="text-danger small mt-1">{{ $message }}</div>
                                         @enderror
@@ -89,11 +94,14 @@
 
                                     <!-- Konfirmasi Password Baru -->
                                     <div class="mb-3">
-                                        <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                                        <label for="password_confirmation" class="form-label">Konfirmasi Password
+                                            Baru</label>
                                         <div class="input-group">
-                                            <input type="password" name="password_confirmation" id="password_confirmation"
-                                                class="form-control" placeholder="Ulangi password baru">
-                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('password_confirmation', this)">
+                                            <input type="password" name="password_confirmation"
+                                                id="password_confirmation" class="form-control"
+                                                placeholder="Ulangi password baru">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                onclick="togglePasswordVisibility('password_confirmation', this)">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         </div>

@@ -1,7 +1,7 @@
 <section>
     <header class="mb-3">
         <p class="text-sm text-muted">
-            {{ __("Perbarui informasi profil akun dan alamat email Anda.") }}
+            {{ __('Perbarui informasi profil akun dan alamat email Anda.') }}
         </p>
     </header>
 
@@ -15,10 +15,10 @@
 
         <!-- Name -->
         <div class="mb-3">
-            <label for="name" class="form-label">Nama</label>
-            <input type="text" name="name" id="name"
-                class="form-control @error('name') is-invalid @enderror"
-                value="{{ old('name', $user->name) }}" placeholder="Masukkan nama" required autofocus autocomplete="name">
+            <label for="name" class="form-label">Nama <span class="text-danger">*</span></label>
+            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
+                value="{{ old('name', $user->name) }}" placeholder="Masukkan nama" required autofocus
+                autocomplete="name">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -26,10 +26,10 @@
 
         <!-- Email -->
         <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
+            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
             <input type="email" name="email" id="email"
-                class="form-control @error('email') is-invalid @enderror"
-                value="{{ old('email', $user->email) }}" placeholder="Masukkan email" required autocomplete="username">
+                class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}"
+                placeholder="Masukkan email" required autocomplete="username">
             @error('email')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -40,8 +40,7 @@
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         {{ __('Alamat email Anda belum diverifikasi.') }}
                     </p>
-                    <button form="send-verification"
-                        class="btn btn-sm btn-outline-secondary">
+                    <button form="send-verification" class="btn btn-sm btn-outline-secondary">
                         {{ __('Klik di sini untuk mengirim ulang email verifikasi.') }}
                     </button>
 

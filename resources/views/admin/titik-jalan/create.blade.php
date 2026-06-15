@@ -29,7 +29,8 @@
                                 @csrf
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label for="nama_titik" class="form-label">Nama Titik</label>
+                                        <label for="nama_titik" class="form-label">Nama Titik <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="nama_titik" id="nama_titik"
                                             class="form-control @error('nama_titik') is-invalid @enderror"
                                             value="{{ old('nama_titik') }}" placeholder="Masukkan nama titik" required>
@@ -39,7 +40,8 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="latitude" class="form-label">Latitude</label>
+                                        <label for="latitude" class="form-label">Latitude <span
+                                                class="text-danger">*</span></label>
                                         <input type="number" step="0.00000001" name="latitude" id="latitude"
                                             class="form-control @error('latitude') is-invalid @enderror"
                                             value="{{ old('latitude') }}" placeholder="Masukkan latitude" required>
@@ -49,7 +51,8 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="longitude" class="form-label">Longitude</label>
+                                        <label for="longitude" class="form-label">Longitude <span
+                                                class="text-danger">*</span></label>
                                         <input type="number" step="0.00000001" name="longitude" id="longitude"
                                             class="form-control @error('longitude') is-invalid @enderror"
                                             value="{{ old('longitude') }}" placeholder="Masukkan longitude" required>

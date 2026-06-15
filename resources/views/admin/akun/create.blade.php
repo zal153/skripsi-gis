@@ -32,7 +32,8 @@
                                 <div class="card-body">
                                     <!-- Nama -->
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">Nama</label>
+                                        <label for="name" class="form-label">Nama <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="name" id="name"
                                             class="form-control @error('name') is-invalid @enderror"
                                             value="{{ old('name') }}" placeholder="Masukkan nama" required>
@@ -43,7 +44,8 @@
 
                                     <!-- Email -->
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
+                                        <label for="email" class="form-label">Email <span
+                                                class="text-danger">*</span></label>
                                         <input type="email" name="email" id="email"
                                             class="form-control @error('email') is-invalid @enderror"
                                             value="{{ old('email') }}" placeholder="Masukkan email" required>
@@ -54,12 +56,14 @@
 
                                     <!-- Password -->
                                     <div class="mb-3">
-                                        <label for="password" class="form-label">Password</label>
+                                        <label for="password" class="form-label">Password <span
+                                                class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="password" name="password" id="password"
                                                 class="form-control @error('password') is-invalid @enderror"
                                                 placeholder="Masukkan password (min. 8 karakter)" required>
-                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('password', this)">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                onclick="togglePasswordVisibility('password', this)">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         </div>
@@ -71,11 +75,13 @@
                                     <!-- Konfirmasi Password -->
                                     <div class="mb-3">
                                         <label for="password_confirmation" class="form-label">Konfirmasi
-                                            Password</label>
+                                            Password <span class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="password" name="password_confirmation" id="password_confirmation"
-                                                class="form-control" placeholder="Ulangi password" required>
-                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('password_confirmation', this)">
+                                            <input type="password" name="password_confirmation"
+                                                id="password_confirmation" class="form-control"
+                                                placeholder="Ulangi password" required>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                onclick="togglePasswordVisibility('password_confirmation', this)">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         </div>

@@ -32,7 +32,8 @@
             <div class="card-body login-card-body p-4">
                 <h4 class="fw-bold text-dark text-center mb-3">Lupa Kata Sandi?</h4>
                 <p class="text-muted text-sm text-center mb-4" style="font-size: 13px; line-height: 1.6;">
-                    Jangan khawatir! Masukkan alamat email Anda yang terdaftar, dan kami akan mengirimkan link untuk mereset kata sandi Anda secara aman.
+                    Jangan khawatir! Masukkan alamat email Anda yang terdaftar, dan kami akan mengirimkan link untuk
+                    mereset kata sandi Anda secara aman.
                 </p>
 
                 <!-- Session Status -->
@@ -47,12 +48,13 @@
 
                     <!-- Email Address -->
                     <div class="mb-4">
-                        <label for="email" class="form-label fw-semibold text-xs text-gray-700" style="font-size: 13px;">Alamat Email Anda</label>
+                        <label for="email" class="form-label fw-semibold text-xs text-gray-700"
+                            style="font-size: 13px;">Alamat Email Anda <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <input type="email" name="email" id="email"
-                                class="form-control @error('email') is-invalid @enderror" 
-                                placeholder="Masukkan email terdaftar..."
-                                value="{{ old('email') }}" required autofocus>
+                                class="form-control @error('email') is-invalid @enderror"
+                                placeholder="Masukkan email terdaftar..." value="{{ old('email') }}" required
+                                autofocus>
                             <div class="input-group-text bg-white border-start-0">
                                 <span class="bi bi-envelope text-muted"></span>
                             </div>
@@ -70,7 +72,8 @@
                     </div>
 
                     <div class="text-center mt-3">
-                        <a href="{{ route('login') }}" class="text-decoration-none text-sm fw-semibold text-primary" style="font-size: 13px;">
+                        <a href="{{ route('login') }}" class="text-decoration-none text-sm fw-semibold text-primary"
+                            style="font-size: 13px;">
                             <i class="bi bi-arrow-left me-1"></i> Kembali ke Halaman Login
                         </a>
                     </div>
@@ -82,7 +85,8 @@
     <!-- /.login-box -->
 
     <!--begin::Required Scripts-->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
     <script src="{{ asset('assets/js/adminlte.js') }}"></script>
 </body>

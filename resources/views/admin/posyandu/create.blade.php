@@ -32,7 +32,8 @@
                                 <div class="card-body">
                                     <!-- Desa -->
                                     <div class="mb-3">
-                                        <label for="desa_id" class="form-label">Desa</label>
+                                        <label for="desa_id" class="form-label">Desa <span
+                                                class="text-danger">*</span></label>
                                         <select name="desa_id" id="desa_id"
                                             class="form-control @error('desa_id') is-invalid @enderror" required>
                                             <option value="">-- Pilih Desa --</option>
@@ -50,7 +51,8 @@
 
                                     <!-- Nama Posyandu -->
                                     <div class="mb-3">
-                                        <label for="nama_posyandu" class="form-label">Nama Posyandu</label>
+                                        <label for="nama_posyandu" class="form-label">Nama Posyandu <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="nama_posyandu" id="nama_posyandu"
                                             class="form-control @error('nama_posyandu') is-invalid @enderror"
                                             value="{{ old('nama_posyandu') }}" placeholder="Masukkan nama posyandu"
@@ -62,7 +64,8 @@
 
                                     <!-- Alamat -->
                                     <div class="mb-3">
-                                        <label for="alamat" class="form-label">Alamat</label>
+                                        <label for="alamat" class="form-label">Alamat <span
+                                                class="text-danger">*</span></label>
                                         <textarea name="alamat" id="alamat" class="form-control @error('alamat') is-invalid @enderror"
                                             placeholder="Masukkan alamat posyandu" rows="3" required>{{ old('alamat') }}</textarea>
                                         @error('alamat')
@@ -72,7 +75,8 @@
 
                                     <!-- Latitude -->
                                     <div class="mb-3">
-                                        <label for="latitude" class="form-label">Latitude</label>
+                                        <label for="latitude" class="form-label">Latitude <span
+                                                class="text-danger">*</span></label>
                                         <input type="number" name="latitude" id="latitude" step="0.00000001"
                                             class="form-control @error('latitude') is-invalid @enderror"
                                             value="{{ old('latitude') }}"
@@ -84,7 +88,8 @@
 
                                     <!-- Longitude -->
                                     <div class="mb-3">
-                                        <label for="longitude" class="form-label">Longitude</label>
+                                        <label for="longitude" class="form-label">Longitude <span
+                                                class="text-danger">*</span></label>
                                         <input type="number" name="longitude" id="longitude" step="0.00000001"
                                             class="form-control @error('longitude') is-invalid @enderror"
                                             value="{{ old('longitude') }}"
@@ -96,7 +101,8 @@
 
                                     <!-- Status -->
                                     <div class="mb-3">
-                                        <label for="status" class="form-label">Status</label>
+                                        <label for="status" class="form-label">Status <span
+                                                class="text-danger">*</span></label>
                                         <select name="status" id="status"
                                             class="form-control @error('status') is-invalid @enderror" required>
                                             <option value="">-- Pilih Status --</option>
