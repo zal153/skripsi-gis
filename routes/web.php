@@ -42,6 +42,9 @@ Route::middleware('auth')->get('/dashboard', function () {
 })->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('posyandu/export-pdf', [PosyanduController::class, 'exportPdf'])->name('posyandu.export-pdf');
+    Route::get('laporan/export-pdf', [AdminLaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
+
     Route::post('posyandu/bulk-delete', [PosyanduController::class, 'bulkDestroy'])->name('posyandu.bulk-destroy');
     Route::post('desa/bulk-delete', [DesaController::class, 'bulkDestroy'])->name('desa.bulk-destroy');
 

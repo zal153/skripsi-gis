@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Laporan;
 use App\Models\LaporanBalasan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,5 +62,16 @@ class LaporanController extends Controller
         ]);
 
         return redirect()->route('laporan.index');
+    }
+
+    public function exportPdf()
+    {
+        $laporans = Laporan::with(['balasans' => function ($query) {
+            $query->orderBy('created_at', 'asc');
+        }, 'balasans.user'])->latest()->get();
+
+        $pdf = Pdf::loadView('admin.laporan.pdf', compact('laporans'));
+
+        return $pdf->download('laporan-feedback-pengguna.pdf');
     }
 }

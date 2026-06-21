@@ -39,7 +39,7 @@
                                             </button>
                                         </li>
                                     </ul>
-                                    <span class="badge bg-secondary me-3">Seed: {{ $seed }}</span>
+                                    <span class="badge bg-success me-3"><i class="bi bi-pin-fill me-1"></i>Data Tetap (20 Titik Uji)</span>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -168,10 +168,6 @@
                                         class="bi bi-gear-fill text-secondary me-2"></i>Kontrol Pengujian</h3>
                             </div>
                             <div class="card-body d-flex flex-column gap-2">
-                                <a href="{{ route('admin.mae-test', ['seed' => $nextSeed]) }}"
-                                    class="btn btn-primary btn-sm w-full py-2">
-                                    <i class="bi bi-shuffle me-2"></i>Acak Titik Uji Baru
-                                </a>
 
                                 <button type="button" class="btn btn-success btn-sm w-full py-2" id="btnCopyMarkdown">
                                     <i class="bi bi-clipboard-check-fill me-2"></i>Salin Tabel (Markdown)

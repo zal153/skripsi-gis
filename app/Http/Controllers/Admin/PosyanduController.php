@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StorePosyanduRequest;
 use App\Http\Requests\Admin\UpdatePosyanduRequest;
 use App\Models\Desa;
 use App\Models\Posyandu;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use SweetAlert2\Laravel\Swal;
 
@@ -120,5 +121,15 @@ class PosyanduController extends Controller
         }
 
         return redirect()->route('posyandu.index');
+    }
+
+    public function exportPdf()
+    {
+        $posyandu = Posyandu::with('desa')->orderBy('id', 'asc')->get();
+
+        $pdf = Pdf::loadView('admin.posyandu.pdf', compact('posyandu'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('laporan-data-posyandu.pdf');
     }
 }
