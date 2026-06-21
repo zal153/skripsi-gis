@@ -107,7 +107,7 @@ class PosyanduController extends Controller
 
         try {
             $idsArray = is_array($ids) ? $ids : explode(',', $ids);
-            Posyandu::whereIn('id', $idsArray)->delete();
+            Posyandu::query()->whereIn('id', $idsArray, 'and', false)->delete();
 
             Swal::success([
                 'title' => 'Berhasil!',

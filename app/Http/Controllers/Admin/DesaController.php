@@ -98,7 +98,7 @@ class DesaController extends Controller
 
         try {
             $idsArray = is_array($ids) ? $ids : explode(',', $ids);
-            Desa::whereIn('id', $idsArray)->delete();
+            Desa::query()->whereIn('id', $idsArray, 'and', false)->delete();
 
             Swal::success([
                 'title' => 'Berhasil!',
