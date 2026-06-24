@@ -31,8 +31,7 @@
                     </p>
 
                     <div class="mb-3">
-                        <label for="delete_password" class="form-label sr-only">{{ __('Password') }} <span
-                                class="text-danger">*</span></label>
+                        <label for="delete_password" class="form-label sr-only">{{ __('Password') }}</label>
                         <input type="password" name="password" id="delete_password"
                             class="form-control @error('password', 'userDeletion') is-invalid @enderror"
                             placeholder="{{ __('Password') }}" required>
@@ -40,7 +39,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="text-danger small mb-3">* Wajib diisi</div>
                 </div>
 
                 <div class="modal-footer border-0 pt-0">

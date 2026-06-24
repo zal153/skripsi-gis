@@ -25,9 +25,9 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h3 class="card-title">Daftar Laporan Posyandu Baru</h3>
                             <div class="ms-auto d-flex gap-2 align-items-center">
-                                <a href="{{ route('laporan.export-pdf') }}" class="btn btn-sm btn-danger">
+                                {{-- <a href="{{ route('laporan.export-pdf') }}" class="btn btn-sm btn-danger">
                                     <i class="bi bi-file-earmark-pdf-fill me-1"></i> Cetak PDF
-                                </a>
+                                </a> --}}
                                 <span class="badge bg-secondary">{{ $laporans->count() }} Laporan</span>
                             </div>
                         </div>

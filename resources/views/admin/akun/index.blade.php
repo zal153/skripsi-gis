@@ -41,7 +41,13 @@
                                                     <a href="{{ route('akun.edit', $item) }}" class="btn btn-sm btn-primary"
                                                         aria-label="Edit akun saya"><i class="bi bi-pencil-square"></i></a>
                                                 @else
-                                                    <span class="text-muted">-</span>
+                                                    <button type="button" class="btn btn-sm btn-info text-white show-detail-btn"
+                                                        data-id="{{ $item->id }}"
+                                                        data-name="{{ $item->name }}"
+                                                        data-email="{{ $item->email }}"
+                                                        aria-label="Tampilkan detail akun">
+                                                        <i class="bi bi-eye-fill"></i>
+                                                    </button>
                                                 @endif
                                             </td>
                                         </tr>
@@ -55,4 +61,33 @@
         </div>
         <!--end::App Content-->
     </main>
+
+    @push('scripts')
+        <script type="module">
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.addEventListener('click', function(e) {
+                    const btn = e.target.closest('.show-detail-btn');
+                    if (btn) {
+                        const id = btn.getAttribute('data-id');
+                        const name = btn.getAttribute('data-name');
+                        const email = btn.getAttribute('data-email');
+                        
+                        Swal.fire({
+                            title: 'Detail Akun',
+                            html: `
+                                <div class="text-start fs-6 p-2">
+                                    <div class="mb-2"><strong>ID:</strong> ${id}</div>
+                                    <div class="mb-2"><strong>Nama:</strong> ${name}</div>
+                                    <div class="mb-2"><strong>Email:</strong> ${email}</div>
+                                </div>
+                            `,
+                            icon: 'info',
+                            confirmButtonText: 'Tutup',
+                            confirmButtonColor: '#0d6efd',
+                        });
+                    }
+                });
+            });
+        </script>
+    @endpush
 </x-app>
