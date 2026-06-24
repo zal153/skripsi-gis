@@ -57,14 +57,18 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                height: 50vh;
+                height: 60vh;
                 width: 100%;
                 min-width: 100%;
                 max-width: 100%;
                 border-right: none;
                 border-top: 1px solid rgba(229, 231, 235, 0.8);
-                box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
-                border-radius: 20px 20px 0 0;
+                box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.08);
+                border-radius: 24px 24px 0 0;
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .sidebar.collapsed {
+                transform: translateY(calc(100% - 70px));
             }
         }
 

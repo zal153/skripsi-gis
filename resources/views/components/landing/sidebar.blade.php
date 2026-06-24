@@ -1,5 +1,10 @@
 <!-- SIDEBAR -->
 <aside class="sidebar">
+    <!-- Mobile Pull Handle -->
+    <div class="md:hidden flex justify-center py-1.5 cursor-pointer -mt-2 mb-2" id="mobileDragHandle" onclick="toggleMobileSidebar()">
+        <div class="w-12 h-1.5 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"></div>
+    </div>
+
     <!-- Logo -->
     <div class="flex items-center gap-3 mb-1">
         <div

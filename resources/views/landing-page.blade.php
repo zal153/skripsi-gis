@@ -91,8 +91,9 @@
                 // Default layer
                 mapLayers.satelit.addTo(map);
 
+                const isMobile = window.innerWidth <= 768;
                 L.control.zoom({
-                    position: 'bottomright'
+                    position: isMobile ? 'topleft' : 'bottomright'
                 }).addTo(map);
 
                 // Create markers but DO NOT add to map yet (hide by default)
@@ -156,6 +157,7 @@
 
             // ─── Cari Terdekat ────────────────────────────────────────────────────────
             function cariTerdekat() {
+                setMobileSidebarCollapsed(false);
                 showLoading(true);
 
                 setTimeout(() => {
@@ -534,6 +536,9 @@
                         destinationMarker.openPopup();
                     }
                 }, 1200);
+
+                // Collapse sidebar on mobile to view map and route details clearly
+                setMobileSidebarCollapsed(true);
             }
 
             // ─── Update Posyandu Markers On Map ──────────────────────────────────────
@@ -670,6 +675,7 @@
 
             // ─── Back to List View ────────────────────────────────────────────────────
             function backToList() {
+                setMobileSidebarCollapsed(false);
                 activePosyanduId = null;
                 currentRouteDest = null;
 
@@ -711,6 +717,7 @@
 
             // ─── Reset ────────────────────────────────────────────────────────────────
             function resetMap() {
+                setMobileSidebarCollapsed(false);
                 if (userMarker) {
                     map.removeLayer(userMarker);
                     userMarker = null;
@@ -973,6 +980,27 @@
                 document.addEventListener('DOMContentLoaded', bootMapWhenReady);
             } else {
                 bootMapWhenReady();
+            }
+
+            // ─── Mobile Sidebar Helpers ───────────────────────────────────────────────
+            function toggleMobileSidebar() {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) {
+                    sidebar.classList.toggle('collapsed');
+                }
+            }
+
+            function setMobileSidebarCollapsed(shouldCollapse) {
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.querySelector('.sidebar');
+                    if (sidebar) {
+                        if (shouldCollapse) {
+                            sidebar.classList.add('collapsed');
+                        } else {
+                            sidebar.classList.remove('collapsed');
+                        }
+                    }
+                }
             }
         </script>
     @endpush
