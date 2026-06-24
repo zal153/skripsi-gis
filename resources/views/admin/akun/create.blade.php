@@ -85,10 +85,11 @@
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         </div>
-                                    </div>
+                                    <div class="text-danger small mb-3">* Wajib diisi</div>
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="reset" class="btn btn-outline-secondary">Reset</button>
                                     <a href="{{ route('akun.index') }}" class="btn btn-danger">Batal</a>
                                 </div>
                             </form>

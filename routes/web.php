@@ -29,6 +29,8 @@ Route::prefix('api')->group(function () {
         Route::get('/posyandu', [App\Http\Controllers\Api\V1\PosyanduController::class, 'index'])->name('posyandu.index');
         Route::get('/laporan', [ApiLaporanController::class, 'index'])->name('laporan.index');
         Route::post('/laporan', [ApiLaporanController::class, 'store'])->name('laporan.store');
+        Route::put('/laporan/{laporan}', [ApiLaporanController::class, 'update'])->name('laporan.update');
+        Route::delete('/laporan/{laporan}', [ApiLaporanController::class, 'destroy'])->name('laporan.destroy');
     });
 });
 
@@ -52,10 +54,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('desa', DesaController::class);
     Route::resource('jalan', JalanController::class);
     Route::resource('titik-jalan', TitikJalanController::class);
-    Route::resource('akun', AkunController::class);
+    Route::resource('akun', AkunController::class)->except(['destroy']);
     Route::resource('laporan', AdminLaporanController::class)->only(['index', 'destroy']);
     Route::post('laporan/{laporan}/reply', [AdminLaporanController::class, 'storeReply'])->name('laporan.reply');
 });
+
+Route::put('laporan/reply/{reply}', [AdminLaporanController::class, 'updateReply'])->name('laporan.reply.update');
+Route::delete('laporan/reply/{reply}', [AdminLaporanController::class, 'destroyReply'])->name('laporan.reply.destroy');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

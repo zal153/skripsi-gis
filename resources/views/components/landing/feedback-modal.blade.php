@@ -62,14 +62,23 @@
                             placeholder="Tulis informasi tambahan seperti patokan lokasi, jadwal buka, dll..."></textarea>
                     </div>
 
+                    <!-- Legend -->
+                    <div class="text-left text-2xs text-gray-500 mt-1">
+                        <span class="text-red-500">*</span> Wajib diisi
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="flex items-center gap-2 mt-2">
                         <button type="button" onclick="closeModal()" 
-                            class="flex-1 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 border border-gray-200 rounded-xl transition-colors text-center">
+                            class="px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50 border border-gray-200 rounded-xl transition-colors text-center">
                             Batal
                         </button>
+                        <button type="reset" 
+                            class="px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50 border border-gray-200 rounded-xl transition-colors text-center">
+                            Reset
+                        </button>
                         <button type="submit" 
-                            class="flex-grow btn-primary !w-auto !py-2 !m-0 !shadow-none">
+                            class="flex-grow btn-primary !w-auto !py-2 !m-0 !shadow-none !text-xs">
                             Kirim Laporan
                         </button>
                     </div>
@@ -111,6 +120,15 @@
                 </div>
                 <!-- Comments list placeholder -->
                 <div id="reportsListContent" class="flex flex-col gap-4"></div>
+            </div>
+            <div id="reportDeleteUndoToast" class="hidden mt-3 rounded-xl bg-gray-900 px-3 py-2 text-xs text-white shadow-lg flex items-center justify-between gap-3">
+                <span>Laporan dihapus</span>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="undoReportDeletion()" class="font-bold text-purple-300 hover:text-purple-200 transition-colors">Undo</button>
+                    <button type="button" onclick="dismissReportDeletionUndo()" class="text-gray-300 hover:text-white transition-colors" aria-label="Tutup notifikasi">
+                        <i class="bi bi-x-lg text-[10px]"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

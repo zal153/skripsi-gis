@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Route;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    $this->user = User::factory()->create();
+    $this->actingAs($this->user);
 });
 
 test('can render index page', function () {
@@ -11,20 +13,40 @@ test('can render index page', function () {
     $response->assertStatus(200);
 });
 
-test('can render edit page', function () {
-    $akun = User::factory()->create();
-    $response = $this->get(route('akun.edit', $akun));
+test('can render own edit page', function () {
+    $response = $this->get(route('akun.edit', $this->user));
     $response->assertStatus(200);
-    $response->assertViewHas('akun', $akun);
+    $response->assertViewHas('akun', $this->user);
 });
 
-test('can update user name and email', function () {
-    $akun = User::factory()->create([
+test('cannot render another users edit page', function () {
+    $response = $this->get(route('akun.edit', User::factory()->create()));
+
+    $response->assertForbidden();
+});
+
+test('cannot update another users account', function () {
+    $akun = User::factory()->create();
+
+    $response = $this->put(route('akun.update', $akun), [
+        'name' => 'Nama Tidak Boleh Diubah',
+        'email' => 'tidak-boleh-diubah@example.com',
+    ]);
+
+    $response->assertForbidden();
+    $this->assertDatabaseMissing('users', [
+        'id' => $akun->id,
+        'name' => 'Nama Tidak Boleh Diubah',
+    ]);
+});
+
+test('can update own name and email', function () {
+    $this->user->update([
         'name' => 'Old Name',
         'email' => 'old@example.com',
     ]);
 
-    $response = $this->put(route('akun.update', $akun), [
+    $response = $this->put(route('akun.update', $this->user), [
         'name' => 'New Name',
         'email' => 'new@example.com',
     ]);
@@ -32,21 +54,21 @@ test('can update user name and email', function () {
     $response->assertRedirect(route('akun.index'));
 
     $this->assertDatabaseHas('users', [
-        'id' => $akun->id,
+        'id' => $this->user->id,
         'name' => 'New Name',
         'email' => 'new@example.com',
     ]);
 });
 
-test('can update user password', function () {
-    $akun = User::factory()->create([
+test('can update own password', function () {
+    $this->user->update([
         'password' => 'password123',
     ]);
-    $oldPassword = $akun->password;
+    $oldPassword = $this->user->password;
 
-    $response = $this->put(route('akun.update', $akun), [
-        'name' => $akun->name,
-        'email' => $akun->email,
+    $response = $this->put(route('akun.update', $this->user), [
+        'name' => $this->user->name,
+        'email' => $this->user->email,
         'current_password' => 'password123',
         'password' => 'newpassword123',
         'password_confirmation' => 'newpassword123',
@@ -54,8 +76,8 @@ test('can update user password', function () {
 
     $response->assertRedirect(route('akun.index'));
 
-    $akun->refresh();
-    $this->assertNotEquals($oldPassword, $akun->password);
+    $this->user->refresh();
+    $this->assertNotEquals($oldPassword, $this->user->password);
 });
 
 test('cannot update email if email is already taken by another user', function () {
@@ -63,32 +85,31 @@ test('cannot update email if email is already taken by another user', function (
         'email' => 'taken@example.com',
     ]);
 
-    $akun = User::factory()->create([
-        'email' => 'myemail@example.com',
-    ]);
+    $this->user->update(['email' => 'myemail@example.com']);
 
-    $response = $this->from(route('akun.edit', $akun))->put(route('akun.update', $akun), [
-        'name' => $akun->name,
+    $response = $this->from(route('akun.edit', $this->user))->put(route('akun.update', $this->user), [
+        'name' => $this->user->name,
         'email' => 'taken@example.com',
     ]);
 
-    $response->assertRedirect(route('akun.edit', $akun));
+    $response->assertRedirect(route('akun.edit', $this->user));
     $response->assertSessionHasErrors(['email']);
 
     $this->assertDatabaseHas('users', [
-        'id' => $akun->id,
+        'id' => $this->user->id,
         'email' => 'myemail@example.com',
     ]);
 });
 
-test('can delete user', function () {
+test('account deletion route is unavailable', function () {
     $akun = User::factory()->create();
 
-    $response = $this->delete(route('akun.destroy', $akun));
+    $response = $this->delete('/akun/'.$akun->id);
 
-    $response->assertRedirect(route('akun.index'));
+    $response->assertMethodNotAllowed();
+    expect(Route::has('akun.destroy'))->toBeFalse();
 
-    $this->assertDatabaseMissing('users', [
+    $this->assertDatabaseHas('users', [
         'id' => $akun->id,
     ]);
 });

@@ -37,17 +37,12 @@
                                             <td>{{ $item->name }}</td>
                                             <td>{{ $item->email }}</td>
                                             <td class="text-center">
-                                                <a href="{{ route('akun.edit', $item) }}"
-                                                    class="btn btn-sm btn-primary"><i
-                                                        class="bi bi-pencil-square"></i></a>
-                                                <form action="{{ route('akun.destroy', $item) }}" method="POST"
-                                                    style="display:inline;" id="delete-form-{{ $item->id }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger delete-btn"
-                                                        data-form-id="{{ $item->id }}"><i
-                                                                class="bi bi-trash"></i></button>
-                                                </form>
+                                                @if (auth()->id() === $item->id)
+                                                    <a href="{{ route('akun.edit', $item) }}" class="btn btn-sm btn-primary"
+                                                        aria-label="Edit akun saya"><i class="bi bi-pencil-square"></i></a>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreAkunRequest;
 use App\Http\Requests\Admin\UpdateAkunRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use SweetAlert2\Laravel\Swal;
 
 class AkunController extends Controller
@@ -47,8 +49,10 @@ class AkunController extends Controller
         }
     }
 
-    public function edit(User $akun)
+    public function edit(Request $request, User $akun): View
     {
+        abort_unless($request->user()->is($akun), 403);
+
         return view('admin.akun.edit', compact('akun'));
     }
 
@@ -80,17 +84,5 @@ class AkunController extends Controller
 
             return back()->withInput();
         }
-    }
-
-    public function destroy(User $akun)
-    {
-        User::destroy($akun->id);
-
-        Swal::success([
-            'title' => 'Berhasil!',
-            'text' => 'Akun berhasil dihapus',
-        ]);
-
-        return redirect()->route('akun.index');
     }
 }

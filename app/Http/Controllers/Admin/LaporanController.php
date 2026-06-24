@@ -74,4 +74,54 @@ class LaporanController extends Controller
 
         return $pdf->download('laporan-feedback-pengguna.pdf');
     }
+
+    /**
+     * Update the specified reply.
+     */
+    public function updateReply(Request $request, LaporanBalasan $reply)
+    {
+        $request->validate([
+            'pesan' => 'required|string',
+        ]);
+
+        $reply->update([
+            'pesan' => $request->input('pesan'),
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Balasan berhasil diperbarui',
+            ]);
+        }
+
+        Swal::success([
+            'title' => 'Berhasil!',
+            'text' => 'Balasan berhasil diperbarui',
+        ]);
+
+        return redirect()->back();
+    }
+
+    /**
+     * Remove the specified reply from storage.
+     */
+    public function destroyReply(Request $request, LaporanBalasan $reply)
+    {
+        $reply->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Balasan berhasil dihapus',
+            ]);
+        }
+
+        Swal::success([
+            'title' => 'Berhasil!',
+            'text' => 'Balasan berhasil dihapus',
+        ]);
+
+        return redirect()->back();
+    }
 }

@@ -45,4 +45,36 @@ class LaporanController extends Controller
             'data' => new LaporanResource($laporan->load('balasans')),
         ], 201);
     }
+
+    /**
+     * Update a report submitted by a user.
+     */
+    public function update(Request $request, Laporan $laporan): JsonResponse
+    {
+        $validated = $request->validate([
+            'nama_posyandu' => ['required', 'string', 'max:255'],
+            'alamat' => ['required', 'string'],
+            'keterangan' => ['nullable', 'string'],
+        ]);
+
+        $laporan->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Laporan berhasil diperbarui',
+        ]);
+    }
+
+    /**
+     * Delete a report submitted by a user.
+     */
+    public function destroy(Laporan $laporan): JsonResponse
+    {
+        $laporan->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Laporan berhasil dihapus',
+        ]);
+    }
 }

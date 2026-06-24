@@ -25,6 +25,7 @@
 
     @push('scripts')
         <script>
+            const isAdmin = @json(auth()->check());
             // ─── Data dari Database (Jember, Kecamatan Arjasa) ──────────────────────
             const DEFAULT_CENTER = [-8.1050, 113.7400];
             const posyanduData = @js($posyanduData ?? []);
@@ -335,11 +336,13 @@
 
                         for (let k = 1; k < result.routes.length; k++) {
                             const altRoute = result.routes[k];
-                            const altKeys = altRoute.path.map(p => `${Number(p.lat).toFixed(5)},${Number(p.lng).toFixed(5)}`);
+                            const altKeys = altRoute.path.map(p =>
+                                `${Number(p.lat).toFixed(5)},${Number(p.lng).toFixed(5)}`);
                             let isDuplicate = false;
 
                             for (const acceptedRoute of filteredRoutes) {
-                                const acceptedKeys = new Set(acceptedRoute.path.map(p => `${Number(p.lat).toFixed(5)},${Number(p.lng).toFixed(5)}`));
+                                const acceptedKeys = new Set(acceptedRoute.path.map(p =>
+                                    `${Number(p.lat).toFixed(5)},${Number(p.lng).toFixed(5)}`));
                                 let sharedCount = 0;
                                 altKeys.forEach(key => {
                                     if (acceptedKeys.has(key)) {
@@ -778,6 +781,8 @@
 
             // ─── Modal & Reports Tab ──────────────────────────────────────────────────
             let currentModalTab = 'form';
+            let reportsById = {};
+            let pendingReportDeletion = null;
 
             function openModal() {
                 document.getElementById('modalOverlay').classList.add('active');
@@ -804,18 +809,22 @@
                 const tabListContainer = document.getElementById('tabListContainer');
 
                 if (tab === 'form') {
-                    tabFormBtn.className = "flex-1 pb-2 text-center text-xs font-bold text-purple-600 border-b-2 border-purple-500 focus:outline-none transition-all";
-                    tabListBtn.className = "flex-1 pb-2 text-center text-xs font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 focus:outline-none transition-all";
-                    
+                    tabFormBtn.className =
+                        "flex-1 pb-2 text-center text-xs font-bold text-purple-600 border-b-2 border-purple-500 focus:outline-none transition-all";
+                    tabListBtn.className =
+                        "flex-1 pb-2 text-center text-xs font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 focus:outline-none transition-all";
+
                     tabFormContainer.classList.remove('hidden');
                     tabListContainer.classList.add('hidden');
                 } else {
-                    tabFormBtn.className = "flex-1 pb-2 text-center text-xs font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 focus:outline-none transition-all";
-                    tabListBtn.className = "flex-1 pb-2 text-center text-xs font-bold text-purple-600 border-b-2 border-purple-500 focus:outline-none transition-all";
-                    
+                    tabFormBtn.className =
+                        "flex-1 pb-2 text-center text-xs font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 focus:outline-none transition-all";
+                    tabListBtn.className =
+                        "flex-1 pb-2 text-center text-xs font-bold text-purple-600 border-b-2 border-purple-500 focus:outline-none transition-all";
+
                     tabFormContainer.classList.add('hidden');
                     tabListContainer.classList.remove('hidden');
-                    
+
                     fetchReports();
                 }
             }
@@ -841,13 +850,14 @@
                 loading.classList.remove('hidden');
                 empty.classList.add('hidden');
                 content.innerHTML = '';
+                reportsById = {};
 
                 try {
                     const response = await fetch('/api/v1/laporan');
                     const json = await response.json();
-                    
+
                     loading.classList.add('hidden');
-                    
+
                     if (!json.success || json.data.length === 0) {
                         empty.classList.remove('hidden');
                         const badge = document.getElementById('reportCountBadge');
@@ -859,13 +869,16 @@
                     if (badge) badge.textContent = json.data.length;
 
                     json.data.forEach(report => {
+                        reportsById[report.id] = report;
                         const reportItem = document.createElement('div');
+                        reportItem.id = `report-item-${report.id}`;
                         reportItem.className = "border-b border-gray-100/60 pb-3 mb-3 last:border-0 last:pb-0";
 
                         let repliesHtml = '';
                         if (report.balasans && report.balasans.length > 0) {
                             repliesHtml = `<div class="ml-8 mt-2.5 flex flex-col gap-2">`;
                             report.balasans.forEach(reply => {
+                                const escapedPesan = reply.pesan.replace(/`/g, '\\`').replace(/\$/g, '\\$');
                                 repliesHtml += `
                                     <div class="flex items-start gap-2 bg-gray-50/70 p-2 rounded-xl border border-gray-100/50">
                                         <div class="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center flex-shrink-0">
@@ -877,7 +890,25 @@
                                                     ${reply.admin_name}
                                                     <span class="bg-emerald-100 text-emerald-700 rounded px-1 text-[8px] font-extrabold uppercase scale-90">Petugas</span>
                                                 </span>
-                                                <span class="text-gray-400 text-[9px] flex-shrink-0">${reply.time_ago}</span>
+                                                <div class="flex items-center gap-1.5 relative">
+                                                    <span class="text-gray-400 text-[9px] flex-shrink-0">${reply.time_ago}</span>
+                                                    ${isAdmin ? `
+                                                    <!-- Dropdown container -->
+                                                    <div class="relative dropdown-container">
+                                                        <button type="button" onclick="toggleCommentDropdown(event, ${reply.id})" class="text-gray-400 hover:text-gray-600 focus:outline-none p-0.5">
+                                                            <i class="bi bi-three-dots-vertical text-[10px]"></i>
+                                                        </button>
+                                                        <div id="dropdown-${reply.id}" class="hidden absolute right-0 mt-1 w-16 bg-white border border-gray-100 rounded-lg shadow-lg py-1 z-50 text-[10px]">
+                                                            <button type="button" onclick="editComment(event, ${reply.id}, \`${escapedPesan}\`)" class="w-full text-left px-2 py-1 text-purple-600 hover:bg-gray-50 flex items-center gap-1 font-semibold">
+                                                                <i class="bi bi-pencil-square"></i> Edit
+                                                            </button>
+                                                            <button type="button" onclick="deleteComment(event, ${reply.id})" class="w-full text-left px-2 py-1 text-red-600 hover:bg-gray-50 flex items-center gap-1 font-semibold">
+                                                                <i class="bi bi-trash-fill"></i> Hapus
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    ` : ''}
+                                                </div>
                                             </div>
                                             <p class="text-[11px] text-gray-600 leading-normal mt-0.5">${reply.pesan}</p>
                                         </div>
@@ -887,9 +918,25 @@
                             repliesHtml += `</div>`;
                         }
 
-                        const noteHtml = report.keterangan 
-                            ? `<p class="text-[11px] text-gray-400 leading-normal mt-0.5 italic">"${report.keterangan}"</p>` 
-                            : '';
+                        let replyFormHtml = '';
+                        if (isAdmin) {
+                            replyFormHtml = `
+                                <form onsubmit="submitReply(event, ${report.id})" class="ml-8 mt-3 flex items-center gap-2">
+                                    <input type="text" id="reply-input-${report.id}" required placeholder="Tulis balasan admin..." 
+                                        class="flex-grow border border-gray-200 rounded-xl px-3 py-1.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all">
+                                    <button type="reset" class="px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 border border-gray-200 rounded-xl transition-colors text-center">
+                                        Reset
+                                    </button>
+                                    <button type="submit" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1 transition-all shadow-sm">
+                                        <i class="bi bi-send-fill"></i> Kirim
+                                    </button>
+                                </form>
+                            `;
+                        }
+
+                        const noteHtml = report.keterangan ?
+                            `<p class="text-[11px] text-gray-400 leading-normal mt-0.5 italic">"${report.keterangan}"</p>` :
+                            '';
 
                         reportItem.innerHTML = `
                             <div class="flex items-start gap-2.5">
@@ -899,14 +946,31 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center justify-between gap-2">
                                         <span class="font-bold text-gray-900 text-xs truncate">Masyarakat Jember</span>
-                                        <span class="text-gray-400 text-[9px] flex-shrink-0">${report.time_ago}</span>
+                                        <div class="flex items-center gap-1.5 relative">
+                                            <span class="text-gray-400 text-[9px] flex-shrink-0">${report.time_ago}</span>
+                                            <div class="relative">
+                                                <button type="button" onclick="toggleReportDropdown(event, ${report.id})" class="text-gray-400 hover:text-gray-600 focus:outline-none p-0.5" aria-label="Aksi laporan">
+                                                    <i class="bi bi-three-dots-vertical text-[10px]"></i>
+                                                </button>
+                                                <div id="report-dropdown-${report.id}" data-report-dropdown class="hidden absolute right-0 mt-1 w-24 bg-white border border-gray-100 rounded-lg shadow-lg py-1 z-50 text-[10px]">
+                                                    <button type="button" onclick="editReport(event, ${report.id})" class="w-full text-left px-2 py-1 text-purple-600 hover:bg-gray-50 flex items-center gap-1 font-semibold">
+                                                        <i class="bi bi-pencil-square"></i> Edit
+                                                    </button>
+                                                    <button type="button" onclick="deleteReport(event, ${report.id})" class="w-full text-left px-2 py-1 text-red-600 hover:bg-gray-50 flex items-center gap-1 font-semibold">
+                                                        <i class="bi bi-trash-fill"></i> Hapus
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <p class="text-xs font-semibold text-purple-600 mt-0.5">${report.nama_posyandu}</p>
                                     <p class="text-[11px] text-gray-500 leading-normal mt-0.5 font-medium">Alamat: ${report.alamat}</p>
                                     ${noteHtml}
                                 </div>
                             </div>
+                            <div id="report-edit-${report.id}" class="hidden ml-10 mt-2.5"></div>
                             ${repliesHtml}
+                            ${replyFormHtml}
                         `;
                         content.appendChild(reportItem);
                     });
@@ -917,6 +981,350 @@
                     console.error('Gagal mengambil laporan:', error);
                 }
             }
+
+            function escapeHtml(value) {
+                return String(value ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            window.toggleReportDropdown = function(event, reportId) {
+                event.stopPropagation();
+
+                document.querySelectorAll('[data-report-dropdown]').forEach(el => {
+                    if (el.id !== `report-dropdown-${reportId}`) {
+                        el.classList.add('hidden');
+                    }
+                });
+
+                const dropdown = document.getElementById(`report-dropdown-${reportId}`);
+                if (dropdown) {
+                    dropdown.classList.toggle('hidden');
+                }
+            };
+
+            window.editReport = async function(event, reportId) {
+                event.stopPropagation();
+
+                const dropdown = document.getElementById(`report-dropdown-${reportId}`);
+                if (dropdown) {
+                    dropdown.classList.add('hidden');
+                }
+
+                const report = reportsById[reportId];
+                if (!report) {
+                    return;
+                }
+
+                document.querySelectorAll('[id^="report-edit-"]').forEach(editContainer => {
+                    if (editContainer.id !== `report-edit-${reportId}`) {
+                        editContainer.classList.add('hidden');
+                        editContainer.innerHTML = '';
+                    }
+                });
+
+                const editContainer = document.getElementById(`report-edit-${reportId}`);
+                if (!editContainer) {
+                    return;
+                }
+
+                if (!editContainer.classList.contains('hidden')) {
+                    editContainer.classList.add('hidden');
+                    editContainer.innerHTML = '';
+                    return;
+                }
+
+                editContainer.innerHTML = `
+                    <form onsubmit="saveReportEdit(event, ${reportId})" class="bg-purple-50/60 border border-purple-100 rounded-xl p-2.5 flex flex-col gap-2">
+                        <input id="edit-report-nama-${reportId}" type="text" required value="${escapeHtml(report.nama_posyandu)}" class="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500" placeholder="Nama Posyandu">
+                        <textarea id="edit-report-alamat-${reportId}" required rows="2" class="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500" placeholder="Alamat Lengkap">${escapeHtml(report.alamat)}</textarea>
+                        <textarea id="edit-report-keterangan-${reportId}" rows="2" class="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500" placeholder="Keterangan Tambahan (opsional)">${escapeHtml(report.keterangan)}</textarea>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" onclick="cancelReportEdit(${reportId})" class="px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:bg-white border border-gray-200 rounded-lg transition-colors">Batal</button>
+                            <button type="submit" class="px-3 py-1.5 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors">Simpan</button>
+                        </div>
+                    </form>
+                `;
+                editContainer.classList.remove('hidden');
+            };
+
+            window.cancelReportEdit = function(reportId) {
+                const editContainer = document.getElementById(`report-edit-${reportId}`);
+                if (editContainer) {
+                    editContainer.classList.add('hidden');
+                    editContainer.innerHTML = '';
+                }
+            };
+
+            window.saveReportEdit = async function(event, reportId) {
+                event.preventDefault();
+
+                const namaPosyandu = document.getElementById(`edit-report-nama-${reportId}`).value.trim();
+                const alamat = document.getElementById(`edit-report-alamat-${reportId}`).value.trim();
+                const keterangan = document.getElementById(`edit-report-keterangan-${reportId}`).value.trim();
+
+                try {
+                    const response = await fetch(`/api/v1/laporan/${reportId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            nama_posyandu: namaPosyandu,
+                            alamat,
+                            keterangan,
+                        })
+                    });
+                    const json = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(json.message || 'Gagal memperbarui laporan');
+                    }
+
+                    fetchReports();
+                } catch (error) {
+                    console.error('Error updating report:', error);
+                    alert(error.message || 'Terjadi kesalahan saat memperbarui laporan');
+                }
+            };
+
+            window.deleteReport = async function(event, reportId) {
+                event.stopPropagation();
+
+                const dropdown = document.getElementById(`report-dropdown-${reportId}`);
+                if (dropdown) {
+                    dropdown.classList.add('hidden');
+                }
+
+                if (pendingReportDeletion) {
+                    finalizeReportDeletion();
+                }
+
+                const reportItem = document.getElementById(`report-item-${reportId}`);
+                if (reportItem) {
+                    reportItem.remove();
+                }
+
+                const badge = document.getElementById('reportCountBadge');
+                if (badge) {
+                    badge.textContent = Math.max(0, Number(badge.textContent) - 1);
+                }
+
+                const undoToast = document.getElementById('reportDeleteUndoToast');
+                undoToast.classList.remove('hidden');
+
+                pendingReportDeletion = {
+                    reportId,
+                    timeoutId: window.setTimeout(finalizeReportDeletion, 10000),
+                };
+            };
+
+            window.undoReportDeletion = function() {
+                if (!pendingReportDeletion) {
+                    return;
+                }
+
+                window.clearTimeout(pendingReportDeletion.timeoutId);
+                pendingReportDeletion = null;
+                document.getElementById('reportDeleteUndoToast').classList.add('hidden');
+                fetchReports();
+            };
+
+            window.dismissReportDeletionUndo = function() {
+                finalizeReportDeletion();
+            };
+
+            async function finalizeReportDeletion() {
+                if (!pendingReportDeletion) {
+                    return;
+                }
+
+                const { reportId, timeoutId } = pendingReportDeletion;
+                window.clearTimeout(timeoutId);
+                pendingReportDeletion = null;
+                document.getElementById('reportDeleteUndoToast').classList.add('hidden');
+
+                try {
+                    const response = await fetch(`/api/v1/laporan/${reportId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    });
+                    const json = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(json.message || 'Gagal menghapus laporan');
+                    }
+                } catch (error) {
+                    console.error('Error deleting report:', error);
+                    alert(error.message || 'Terjadi kesalahan saat menghapus laporan');
+                    fetchReports();
+                }
+            }
+
+            // Toggle comment dropdown menu
+            window.toggleCommentDropdown = function(event, replyId) {
+                event.stopPropagation();
+
+                // Hide all other dropdowns
+                document.querySelectorAll('[id^="dropdown-"]').forEach(el => {
+                    if (el.id !== `dropdown-${replyId}`) {
+                        el.classList.add('hidden');
+                    }
+                });
+
+                const dropdown = document.getElementById(`dropdown-${replyId}`);
+                if (dropdown) {
+                    dropdown.classList.toggle('hidden');
+                }
+            };
+
+            // Close all dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                document.querySelectorAll('[id^="dropdown-"]').forEach(el => {
+                    el.classList.add('hidden');
+                });
+                document.querySelectorAll('[data-report-dropdown]').forEach(el => {
+                    el.classList.add('hidden');
+                });
+            });
+
+            // Edit comment logic
+            window.editComment = async function(event, replyId, currentMessage) {
+                event.stopPropagation();
+
+                // Hide dropdown
+                const dropdown = document.getElementById(`dropdown-${replyId}`);
+                if (dropdown) dropdown.classList.add('hidden');
+
+                const {
+                    value: text
+                } = await Swal.fire({
+                    title: 'Edit Balasan',
+                    input: 'textarea',
+                    inputValue: currentMessage,
+                    inputAttributes: {
+                        required: 'true',
+                        rows: '3',
+                        class: 'w-full border border-gray-200 rounded-xl p-2 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500/20'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Simpan',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#7c3aed',
+                    cancelButtonColor: '#6b7280',
+                    preConfirm: (value) => {
+                        if (!value.trim()) {
+                            Swal.showValidationMessage('Pesan balasan tidak boleh kosong');
+                        }
+                        return value;
+                    }
+                });
+
+                if (text) {
+                    try {
+                        const response = await fetch(`/laporan/reply/${replyId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                _method: 'PUT',
+                                pesan: text
+                            })
+                        });
+
+                        const json = await response.json();
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Balasan berhasil diperbarui',
+                                confirmButtonColor: '#7c3aed',
+                                timer: 1500
+                            });
+                            fetchReports();
+                        } else {
+                            throw new Error(json.message || 'Gagal memperbarui balasan');
+                        }
+                    } catch (error) {
+                        console.error('Error updating reply:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: error.message || 'Terjadi kesalahan saat memperbarui balasan',
+                            confirmButtonColor: '#7c3aed'
+                        });
+                    }
+                }
+            };
+
+            // Delete comment logic
+            window.deleteComment = async function(event, replyId) {
+                event.stopPropagation();
+
+                // Hide dropdown
+                const dropdown = document.getElementById(`dropdown-${replyId}`);
+                if (dropdown) dropdown.classList.add('hidden');
+
+                const result = await Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: 'Balasan ini akan dihapus secara permanen!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Hapus',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`/laporan/reply/${replyId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                _method: 'DELETE'
+                            })
+                        });
+
+                        const json = await response.json();
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Balasan berhasil dihapus',
+                                confirmButtonColor: '#7c3aed',
+                                timer: 1500
+                            });
+                            fetchReports();
+                        } else {
+                            throw new Error(json.message || 'Gagal menghapus balasan');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting reply:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: error.message || 'Terjadi kesalahan saat menghapus balasan',
+                            confirmButtonColor: '#7c3aed'
+                        });
+                    }
+                }
+            };
 
             async function submitReport(event) {
                 event.preventDefault();
@@ -1017,7 +1425,9 @@
                     let touchStartY = 0;
                     headerArea.addEventListener('touchstart', function(e) {
                         touchStartY = e.changedTouches[0].screenY;
-                    }, { passive: true });
+                    }, {
+                        passive: true
+                    });
 
                     headerArea.addEventListener('touchend', function(e) {
                         const touchEndY = e.changedTouches[0].screenY;
@@ -1032,7 +1442,9 @@
                             // Swipe up -> expand
                             sidebar.classList.remove('collapsed');
                         }
-                    }, { passive: true });
+                    }, {
+                        passive: true
+                    });
                 }
             });
         </script>

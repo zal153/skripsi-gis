@@ -64,8 +64,11 @@
             @enderror
         </div>
 
+        <div class="text-danger small mb-3">* Wajib diisi</div>
+
         <div class="d-flex align-items-center gap-2 mt-4">
             <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="reset" class="btn btn-outline-secondary">Reset</button>
         </div>
     </form>
 </section>

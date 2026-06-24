@@ -40,11 +40,13 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="text-danger small mb-3">* Wajib diisi</div>
                 </div>
 
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">{{ __('Batal') }}</button>
+                    <button type="reset" class="btn btn-outline-secondary">{{ __('Reset') }}</button>
                     <button type="submit" class="btn btn-danger">{{ __('Hapus Akun') }}</button>
                 </div>
             </form>

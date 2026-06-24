@@ -39,10 +39,11 @@
                                         @error('nama_desa')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
-                                    </div>
+                                    <div class="text-danger small mb-3">* Wajib diisi</div>
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="reset" class="btn btn-outline-secondary">Reset</button>
                                     <a href="{{ route('desa.index') }}" class="btn btn-danger">Batal</a>
                                 </div>
                             </form>

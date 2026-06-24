@@ -60,7 +60,7 @@
                     <!-- Email Address -->
                     <div class="mb-4">
                         <label for="email" class="form-label fw-semibold text-xs text-gray-700"
-                            style="font-size: 13px;">Alamat Email Anda <span class="text-danger">*</span></label>
+                            style="font-size: 13px;">Alamat Email Anda</label>
                         <div class="input-group">
                             <input type="email" name="email" id="email"
                                 class="form-control"
@@ -73,10 +73,17 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="d-grid gap-2 mb-3">
-                        <button type="submit" class="btn btn-primary py-2 fw-semibold">
-                            <i class="bi bi-envelope-fill me-1"></i> Kirim Link Reset Password
-                        </button>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                                <i class="bi bi-envelope-fill me-1"></i> Kirim Link Reset Password
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button type="reset" class="btn btn-outline-secondary w-100 py-2 fw-semibold">
+                                Reset
+                            </button>
+                        </div>
                     </div>
 
                     <div class="text-center mt-3">

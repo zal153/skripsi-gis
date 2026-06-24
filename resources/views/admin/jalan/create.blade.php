@@ -67,10 +67,11 @@
                                     <div class="alert alert-info mb-0" role="alert">
                                         Jarak akan dihitung otomatis menggunakan rumus Haversine berdasarkan koordinat
                                         titik awal dan titik akhir.
-                                    </div>
+                                    <div class="text-danger small mt-3 mb-0">* Wajib diisi</div>
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="reset" class="btn btn-outline-secondary">Reset</button>
                                     <a href="{{ route('jalan.index') }}" class="btn btn-danger">Batal</a>
                                 </div>
                             </form>
