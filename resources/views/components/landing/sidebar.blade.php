@@ -1,19 +1,21 @@
 <!-- SIDEBAR -->
 <aside class="sidebar">
-    <!-- Mobile Pull Handle -->
-    <div class="md:hidden flex justify-center py-1.5 cursor-pointer -mt-2 mb-2" id="mobileDragHandle" onclick="toggleMobileSidebar()">
-        <div class="w-12 h-1.5 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"></div>
-    </div>
-
-    <!-- Logo -->
-    <div class="flex items-center gap-3 mb-1">
-        <div
-            class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shadow-sm overflow-hidden">
-            <img src="{{ asset('assets/img/logo.png') }}" class="w-full h-full object-cover" alt="Logo" />
+    <!-- Header Area (Tappable & Swipeable on Mobile) -->
+    <div id="sidebarHeaderArea" class="flex flex-col">
+        <!-- Mobile Pull Handle -->
+        <div class="md:hidden flex justify-center py-3 -mt-2 cursor-pointer" id="mobileDragHandle">
+            <div class="w-12 h-1.5 rounded-full bg-gray-300"></div>
         </div>
-        <div class="flex flex-col">
-            <span class="font-bold text-gray-900 text-base leading-tight tracking-tight">Posyandu Locator</span>
-            <span class="text-gray-400 text-2xs" style="font-size: 10px;">Kabupaten Jember</span>
+
+        <!-- Logo -->
+        <div class="flex items-center gap-3 mb-1 cursor-pointer">
+            <div class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shadow-sm overflow-hidden">
+                <img src="{{ asset('assets/img/logo.png') }}" class="w-full h-full object-cover" alt="Logo" />
+            </div>
+            <div class="flex flex-col">
+                <span class="font-bold text-gray-900 text-base leading-tight tracking-tight">Posyandu Locator</span>
+                <span class="text-gray-400 text-2xs" style="font-size: 10px;">Kabupaten Jember</span>
+            </div>
         </div>
     </div>
 

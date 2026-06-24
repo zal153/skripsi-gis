@@ -1002,6 +1002,39 @@
                     }
                 }
             }
+
+            // Bind click & touch swipe gestures for mobile bottom sheet
+            document.addEventListener('DOMContentLoaded', function() {
+                const headerArea = document.getElementById('sidebarHeaderArea');
+                if (headerArea) {
+                    // Toggle collapse state on click/tap
+                    headerArea.addEventListener('click', function(e) {
+                        if (e.target.closest('a') || e.target.closest('button')) return;
+                        toggleMobileSidebar();
+                    });
+
+                    // Swipe Gestures
+                    let touchStartY = 0;
+                    headerArea.addEventListener('touchstart', function(e) {
+                        touchStartY = e.changedTouches[0].screenY;
+                    }, { passive: true });
+
+                    headerArea.addEventListener('touchend', function(e) {
+                        const touchEndY = e.changedTouches[0].screenY;
+                        const swipeDistance = touchEndY - touchStartY;
+                        const sidebar = document.querySelector('.sidebar');
+                        if (!sidebar) return;
+
+                        if (swipeDistance > 30) {
+                            // Swipe down -> collapse
+                            sidebar.classList.add('collapsed');
+                        } else if (swipeDistance < -30) {
+                            // Swipe up -> expand
+                            sidebar.classList.remove('collapsed');
+                        }
+                    }, { passive: true });
+                }
+            });
         </script>
     @endpush
 </x-landing.layout>
